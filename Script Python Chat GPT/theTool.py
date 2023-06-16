@@ -1,23 +1,25 @@
 #Format : py promptManager.py ProductID ProductName BrandName EAN13 Mode
-import sys
-import openai
-import re
-import os
+import sys, openai, re, os, time, optparse
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import time 
+
+"""
+NEEDS :
+openai python package - to install on windows : pip install openai
+selenium python package - to install on windows : pip install selenium
+
+"""
 
 # Write your own prompt and add : {Product}
 # for the product Name and add : {Brand}
-# for the brand name
+# for the brand name and add : {EAN}
+# for the EAN13
 promptFile = "prompt Opti.txt"
 openai.api_key = "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"
 
-"""
-def GetParts(chatGPTReply):
-    parts = re.split(r'Partie\s*\d+\s*:', chatGPTReply)
-    parts = [part.strip() for part in parts if part.strip()]
-    return parts"""
+def PrintWarningMessage(message):
+    print("| Warning : " + message + " |")
+
 def PrintErrorMessage(message, exeption = ""):
     print("====SCRIPT ERROR====\nMESSAGE : " + message + "\n====================")
     raise Exception(exeption)
@@ -53,7 +55,7 @@ def AskChatGPTResult(prompt):
     return reply
 
 
-def GetPrompt(productName, productBrand):
+def GetPrompt(productName, productBrand, EAN13):
     with open(promptFile, 'r', encoding="utf-8") as f:
         originalPrompt = f.read()
     
@@ -69,8 +71,12 @@ def GetPrompt(productName, productBrand):
                 inColumn = False
                 if "brand" in theWordeuuuu:
                     finalPrompt += productBrand
-                else:
+                elif "product" in theWordeuuuu:
                     finalPrompt += productName
+                elif "ean" in theWordeuuuu :
+                    finalPrompt += EAN13
+                else:
+                    PrintWarningMessage("Balise : " + "{" + theWordeuuuu + "} Introuvable, Utilisez soit : ")
                 theWordeuuuu = ""
             else:
                 theWordeuuuu += c.lower()
@@ -90,6 +96,32 @@ def Main():
         PrintMultipleErrorMesssages(errorTab[i:], "Erreur d'Arguments")
     else:
         print("Current Path : " + os.getcwd())
+
+        parse = optparse.OptionParser( """Usage: py ./{0} [Options]
+ _________________________________________________________________________
+|           OPTIONS:			                   Description:			  |
++=========================================================================+
+    -n --name <Product Name>       |  Set Product Name                    |
+				                   +									  +
+    -b --brand <Product Brand>     |  Set Product Brand			          |
+				                   +									  +
+    -ean --EAN13 <Product EAN13>   |  Set Product EAN13			          |
+				                   +									  +
+    -id <Product ID>               |  Set Product ID			          |
+				                   +									  +
+    -m --mode <mode>               |  Set Tool Mode  			          |
+                                   +                                      +
+    -id <Product ID>               |  Set Product ID			          |
+				                   +									  +
+    -o --output <Directory>        |  Save the result IN Directory	      |
+				                   +									  +
+==========================================================================+
+    -v --version                   |  SHOW TOOL VERSION  ||
+				                   +			         ++
+    -e --examples                  |  SHOW TOOL EXAMPLES ||
+===========================================================
+        """.format(sys.argv[0]))
+        parse.add_option
 
         #Get all Args
         productID = sys.argv[1]
