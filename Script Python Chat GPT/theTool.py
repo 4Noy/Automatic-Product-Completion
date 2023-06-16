@@ -3,26 +3,28 @@ import sys
 import openai
 import re
 import os
+import time 
+import requests
+import random
+
+#All For Web Request
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import time 
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 
 # Write your own prompt and add : {Product}
 # for the product Name and add : {Brand}
 # for the brand name
 promptFile = "prompt Opti.txt"
 openai.api_key = "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"
+seleniumSearchEngineDriverPath = "C:\selenium browser drivers\chromedriver.exe"
 
-"""
-def GetParts(chatGPTReply):
-    parts = re.split(r'Partie\s*\d+\s*:', chatGPTReply)
-    parts = [part.strip() for part in parts if part.strip()]
-    return parts"""
-def PrintErrorMessage(message, exeption = ""):
+def PrintErrorMessage(message:str, exeption = ""):
     print("====SCRIPT ERROR====\nMESSAGE : " + message + "\n====================")
     raise Exception(exeption)
 
-def PrintMultipleErrorMesssages(messages, exeption = ""):
+def PrintMultipleErrorMesssages(messages:str, exeption = ""):
     lengthMessages = len(messages)
     if lengthMessages == 0:
         print("====SCRIPT ERROR====\nNO MESSAGE\n====================")
@@ -35,15 +37,30 @@ def PrintMultipleErrorMesssages(messages, exeption = ""):
 
     raise Exception(exeption)
 
-def GetParts(chatGPTReply):
+def GetParts(chatGPTReply:str):
     parts = re.split(r'Partie\s*\d+\s*:', chatGPTReply)
     parts = [part.strip() for part in parts if part.strip()]
     return parts
+
+def MoveToProductPath(productID:str, originalPath = os.getcwd()):
+    if not os.path.isdir("Products/") :
+        print("Création du Dossier /Products/")
+        os.mkdir('Products/')
+    os.chdir(originalPath + "/Products")
+
+    if not os.path.isdir(productID + "/"):
+        print("Création du Dossier /Products/productID")
+        os.mkdir(productID + "/")
+    os.chdir(originalPath + "/Products/" + productID + "/")
+
+def SaveData(fileName:str ,data, mode = "wb"):
+    with open(fileName, mode) as f:
+        f.write(data)
             
 """def GetPicturesFromEAN13(EAN13):"""
     
 
-def AskChatGPTResult(prompt):
+def AskChatGPTResult(prompt:str):
     print("Requesting Chat GPT...")
     promptToSend = [{"role" : "user", "content": prompt}]
     chat = openai.ChatCompletion.create(
@@ -53,7 +70,7 @@ def AskChatGPTResult(prompt):
     return reply
 
 
-def GetPrompt(productName, productBrand):
+def GetPrompt(productName:str, productBrand:str):
     with open(promptFile, 'r', encoding="utf-8") as f:
         originalPrompt = f.read()
     
@@ -83,13 +100,81 @@ def GetPrompt(productName, productBrand):
     finalPrompt += "\n\nEach Part will start like this:\nPart [number]: the text\n\nResult in Français"
     return finalPrompt
 
+def GetPictures(search:str, nbPictures = 3):
+    print("Getting Pictures...")
+
+    originalPath = os.getcwd()
+    if not os.path.isdir("img/"):
+        os.mkdir("img/")
+    os.chdir(originalPath + "/img/")
+
+    if nbPictures <= 0:
+        #PrintWarningMessage("Number of pictures asked <= 0")
+        return []
+
+    #Get Right Format for google search
+    search = search.replace(" ", "+")
+
+    service = Service(seleniumSearchEngineDriverPath)
+    browser = webdriver.Chrome(service=service)
+    search_url = f"https://www.google.com/search?site=&tbm=isch&source=hp&biw=1873&bih=990&q={search}"
+    images_url = []
+
+    
+    # open browser and begin search
+    browser.get(search_url)
+    time.sleep(0.5)
+    doNotConsentGoogleButton = browser.find_element(By.XPATH, "/html/body/c-wiz/div/div/div/div[2]/div[1]/div[3]/div[1]/div[1]/form[1]/div/div/button")
+    doNotConsentGoogleButton.click()
+    time.sleep(0.5)
+
+    images = browser.find_elements(By.CLASS_NAME, 'rg_i') 
+    count = 0
+    for image in images:
+        #Get images source url
+        image.click()
+        time.sleep(random.randint(60,90)/60)
+        try:
+            element = browser.find_element(By.XPATH, "/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div[2]/div/div[2]/div[2]/div[2]/c-wiz/div/div/div/div[3]/div[1]/a/img[1]")
+        except:
+            #PrintWarningMessage("Cannot Get Image N°" + count)
+            print("Cannot Get Image N°" + str(count))
+            continue
+
+        images_url.append(element.get_attribute("src"))
+
+        # write image to file
+        try:
+            reponse = requests.get(images_url[count])
+            if reponse.status_code == 200:
+                SaveData(f"image-{count+1}.jpg", reponse.content)
+            else:
+                #PrintWarningMessage("Cannot Get Image from Url - url:" + str(images_url[count]))
+                print("Cannot Get Image N°" + str(count))
+                print("Cannot Get Image from Url - url:" + str(images_url[count]))
+        except:
+            ##PrintWarningMessage("Error While Requesting Image URL - url:" + str(images_url[count]))
+            print("Cannot Get Image N°" + str(count))
+            print("Error While Requesting Image URL - url:" + str(images_url[count]))
+
+        #Stop
+        count += 1
+        if count == nbPictures:
+            break
+    browser.close()
+
+
+    return images_url
+    
+
 def Main():
     errorTab = ["Veuillez Rentrer l'ID du Produit","Veuillez Rentrer un nom de Produit", "Veuillez Rentrer la marque du Produit", "Veuillez Rentrer L'EAN13 du produit", "Veuillez Rentrer le mode"]
     if len(sys.argv) < 5:
         i = len(sys.argv)
         PrintMultipleErrorMesssages(errorTab[i:], "Erreur d'Arguments")
     else:
-        print("Current Path : " + os.getcwd())
+        originalPath = os.getcwd()
+        print("Current Path : " + originalPath)
 
         #Get all Args
         productID = sys.argv[1]
@@ -122,22 +207,12 @@ def Main():
         if parts == [] or parts == [""]:
             PrintErrorMessage("Erreur, parties vides", "Spliting Part Error")
 
-        if not os.path.isdir("Products/") :
-            print("Création du Dossier /Products/")
-            os.mkdir('Products/')
-        os.chdir(os.getcwd()+"/Products")
-
-        if not os.path.isdir(productID + "/"):
-            print("Création du Dossier /Products/productID")
-            os.mkdir(productID + "/")
+        MoveToProductPath(productID, originalPath)
 
         for i in range(len(parts)):
-            with open(productID + "/""part"+str(i+1), "w") as f:
-                f.write(parts[i])
-                
+            SaveData("part"+str(i+1), parts[i], "w")
 
-        print(parts)
-        print(chatGPTReply)
+        GetPictures(productEAN13, 5)
 
 if __name__ == '__main__':
     Main()
