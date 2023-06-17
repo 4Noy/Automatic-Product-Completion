@@ -1,0 +1,9 @@
+Tasks :
+Mettre que une petite partie des liens dans la console
+Faire des Logs
+Ajouter les listes de produits
+Ajouter Fonction Changer de produits
+Faire une init pour configurer la clé API open AI et le chemin SeleniumChromeDriverPath
+Vérifier si le Model chat GPT existe, Signaler quand il ne resque plus beaucoup de Token et tout
+Gerer le delai de réponse web et faire un time Out
+Faire comme Web Chat GPT pour opti les reponses de chat gpt
