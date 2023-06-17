@@ -1,5 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+
+__author__ = "Noy."
+__version__ = "0.1"
+__credits__ = ["Mev"]
+
+
 import sys, openai, re, os, time, optparse, random, requests
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -7,8 +14,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
 
-__author__ = "Nσy."
-__version__ = "0.1"
+
 
 """
 NEEDS :
@@ -31,38 +37,60 @@ And an Internet connection :)
 openai.api_key = "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"
 seleniumSearchEngineDriverPath = "C:\selenium browser drivers\chromedriver.exe"
 
+setUpMessage = """
+
+"""
+
 #===================================================================================================
 
 
 
 # 1 - Configuring the Parser and Arguments 
 #===================================================================================================
-usage =  """Usage: py {0} [Options]
- ____________________________________________________________________________
-|             OPTIONS:                          Description:                 |
-+============================================================================+
-|   -h --help                      |  Show this help message and exit        |
-+                                  +                                         +
-|   -n --name <Product Name>       |  Set Product Name                       |
-+                                  +                                         +
-|   -b --brand <Product Brand>     |  Set Product Brand                      |
-+                                  +                                         +
-|   -e --EAN <Product EAN13>       |  Set Product EAN13                      |
-+                                  +                                         +
-|   -i --ID <Product ID>           |  Set Product ID                         |
-+                                  +                                         +
-|   -m --mode <Mode>               |  Set Tool Mode                          |
-+                                  +                                         +
-|   -p --prompt <File Directory>   |  Use the given prompt file              |
-+                                  +                                         +
-|   -o --output <Directory>        |  Save the result IN Directory           |
-+                                  +                                         +
-|   -v --verbose                   |  Verbose Mode                           |
-+                                  +                                         +
-|   --picnum <Number>              |  Configure picture number, DEFAULT : 3  |
-+                                  +                                         +
-=============================================================================+
+__doc__ =  """Usage: py {0} [Options]
+MADE BY : {1}
 
+This tool is a python script to automate Product Creation and Completion.
+It can be integrated directly in Your Website with some PHP code.
+
+This tool get images from google searchs with chrome+selenium and get some article descriptions made by OpenAI large language models that have to be reviewed by humans due to some of his extravagances.
+
+
+Prompt files and 
+
+
+ _____________________________________________________________________________________
+|             OPTIONS:                          Description:                          |
++=====================================================================================+
+|   -h --help                      |  Show this help message and exit                 |
++                                  +                                                  +
+|   -n --name <Product Name>       |  Set Product Name                                |
++                                  +                                                  +
+|   -b --brand <Product Brand>     |  Set Product Brand                               |
++                                  +                                                  +
+|   -e --EAN <Product EAN13>       |  Set Product EAN13                               |
++                                  +                                                  +
+|   -i --ID <Product ID>           |  Set Product ID                                  |
++                                  +                                                  +
+|   -m --mode <Mode>               |  Set Tool Mode                                   |
++                                  +                                                  +
+|   -p --prompt <File Directory>   |  Use the given prompt file                       |
++                                  +                                                  +
+|   -s --search <File Directory>   |  Use the given search File to find pictures      |
++                                  +                                                  +
+|   -o --output <Directory>        |  Save the result IN Directory                    |
++                                  +                                                  +
+|   -v --verbose                   |  Verbose Mode                                    |
++                                  +                                                  +
+|   --picnum <Number>              |  Specify picture number, DEFAULT : 3             |
++                                  +                                                  +
+|   --model <Model Name>           |  Specify Open AI LLM, DEFAULT : gpt-3.5-turbo    |
++                                  +                                                  +
+======================================================================================+
+
+
+
+There is multiple usages for this tool, you can change usages by changing mode.
  ___________________________________________________
 |      MODE:     |         Description:             |
 +===================================================+
@@ -74,21 +102,21 @@ usage =  """Usage: py {0} [Options]
 +                +                                  +
 ====================================================+
 
-        """.format(sys.argv[0])
-parser = optparse.OptionParser( usage = usage, version="SEO_Product_Completion" + __version__)
+        """.format(sys.argv[0], __author__)
+parser = optparse.OptionParser(usage = __doc__, version="SEO_Product_Completion" + __version__, add_help_option = False)
 
+parser.add_option("-h", "--help", dest="help", action="store_true", default=False, help="Show Help Message")
 parser.add_option("-n", "--name", dest="productName", type="string", help="Set Product Name")
 parser.add_option("-b", "--brand", dest="productBrand", type="string", help="Set Product Brand")
 parser.add_option("-e", "--EAN", dest="productEAN13", type="int", help="Set Product EAN13, must be a number")
 parser.add_option("-i", "--ID", dest="productID", type="int", help= "Set Product ID, must be a number")
-parser.add_option("-m", "--mode", dest="toolMode", type="int", help="Set the Tool mode, must an existing mode")
+parser.add_option("-m", "--mode", dest="toolMode", type="int", default=1, help="Set the Tool mode, must an existing mode")
 parser.add_option("-p", "--prompt", dest="promptFile", type="string", help="Set the Prompt File")
-parser.add_option("-o", "--output", dest="outputDirectory", type="string", help="Customize the Directory Output")
+parser.add_option("-s", "--search", dest="searchFile", type="string", help="Set the search file")
+parser.add_option("-o", "--output", dest="outputDirectory", type="string", default=os.getcwd(), help="Customize the Directory Output")
 parser.add_option("-v", "--verbose", dest="verbose", action="store_true", default=False, help="Activate Verbose Mode")
 parser.add_option("--picnum", dest="picturesNumber", type="int", default=3, help="Configure Picture Number, DEFAULT : 3")
-
-(options, args) = parser.parse_args()
-
+parser.add_option("--model", dest="openAIModel", type="string", default="gpt-3.5-turbo", help="Configure Open AI LLM, DEFAULT : gpt-3.5-turbo")
 
 #===================================================================================================
 
@@ -96,22 +124,24 @@ parser.add_option("--picnum", dest="picturesNumber", type="int", default=3, help
 
 # 2 - Setting Up Global Variables
 #===================================================================================================
+(options, args) = parser.parse_args()
+
+if options.help:
+    print(__doc__)
+    exit(0)
+
 productID = options.productID
 productName = options.productName
 productBrand = options.productBrand
 productEAN13 = options.productEAN13
 promptFile = options.promptFile
+searchFile = options.searchFile
 picturesNumber = options.picturesNumber
+toolMode = options.toolMode
+outputDirectory = options.outputDirectory
+openAIModel = options.openAIModel
 
-if options.toolMode == None:
-    toolMode = 1
-else:
-    toolMode = options.toolMode
-
-if options.outputDirectory == None:
-    outputDirectory = os.getcwd()
-else:
-    outputDirectory = options.outputDirectory
+warningNumber = 0
 
 movedToProductIDDirectory = False
 originalPath = os.getcwd()
@@ -123,12 +153,14 @@ originalPath = os.getcwd()
 # 3 - PRINT METHODS
 #===================================================================================================
 def PrintWarningMessage(message):
+    global warningNumber
     PrintVerbose("| Warning : " + message + " |")
+    warningNumber += 1
 
 
 def ErrorMessage(message:str, exeption = ""):
     print("====SCRIPT ERROR====\nMESSAGE : " + message + "\n====================")
-    print(usage)
+    print(__doc__)
     exit(0)
 
 
@@ -142,7 +174,7 @@ def MultipleErrorMesssages(messages:str, exeption = ""):
         print("====SCRIPT ERROR====")
         for i in range(lengthMessages):
             print("MESSAGE N°{} : ".format(i) + messages[i] + "\n====================")
-    print(usage)
+    print(__doc__)
     exit(0)
 
 
@@ -156,9 +188,9 @@ def PrintVerbose(message):
 
 # 4 - Various Utilities
 #===================================================================================================
-def GetArgVariable(variable):
+def GetArgVariable(variable, variableName):
     if variable == None:
-        ErrorMessage("Variable : " + f'{variable=}'.split('=')[0])
+        ErrorMessage("Variable \"{}\" Used Not Set".format(variableName))
     else:
         return variable
 
@@ -169,18 +201,16 @@ def GetParts(chatGPTReply:str):
 
 
 def MoveToProductPath():
-    if outputDirectory == None:
-        outputDirectory = ""
 
     if not os.path.isdir(outputDirectory+"/Products/") :
         print("Creating Directory : Products/")
-        os.mkdir(outputDirectory+'Products/')
+        os.mkdir(outputDirectory+'/Products/')
     os.chdir(outputDirectory + "/Products")
 
-    if not os.path.isdir(GetArgVariable(productID) + "/"):
+    if not os.path.isdir(GetArgVariable(str(productID), "Product ID") + "/"):
         print("Creating Directory : Products/productID")
-        os.mkdir(productID + "/")
-    os.chdir(outputDirectory + "/Products/" + productID + "/")
+        os.mkdir(str(productID) + "/")
+    os.chdir(outputDirectory + "/Products/" + str(productID) + "/")
 
     movedToProductIDDirectory = True
 
@@ -188,44 +218,24 @@ def MoveToProductPath():
 def SaveData(fileName:str ,data, mode = "wb"):
     with open(fileName, mode) as f:
         f.write(data)
-    
 
-#===================================================================================================
-
-
-
-# 5 - Main Functions
-#===================================================================================================
-def AskChatGPTResult(prompt:str):
-    PrintVerbose("Requesting Chat GPT...")
-    promptToSend = [{"role" : "user", "content": prompt}]
-    chat = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo", messages=promptToSend
-            )
-    reply = chat.choices[0].message.content
-    return reply
-
-
-def GetPrompt():
-    with open(GetArgVariable(promptFile), 'r', encoding="utf-8") as f:
-        originalPrompt = f.read()
-    
+def IntegrateElementsInText(text):
     finalPrompt = ""
-    lenghtOriginalPrompt = len(originalPrompt)
+    lenghtText = len(text)
     i = 0
     inColumn = False
     theWordeuuuu = ""
-    while i < lenghtOriginalPrompt:
-        c = originalPrompt[i]
+    while i < lenghtText:
+        c = text[i]
         if inColumn:
             if c == "}":
                 inColumn = False
                 if "brand" in theWordeuuuu:
-                    finalPrompt += GetArgVariable(productBrand)
+                    finalPrompt += GetArgVariable(productBrand, "Product Brand")
                 elif "product" in theWordeuuuu:
-                    finalPrompt += GetArgVariable(productName)
+                    finalPrompt += GetArgVariable(productName, "Product Name")
                 elif "ean" in theWordeuuuu :
-                    finalPrompt += GetArgVariable(productEAN13)
+                    finalPrompt += GetArgVariable(productEAN13, "Product EAN13")
                 else:
                     PrintWarningMessage("Balise : " + "{" + theWordeuuuu + "} Introuvable, Utilisez soit : \{Brand\}, \{Product\} or \{EAN\}")
                 theWordeuuuu = ""
@@ -237,12 +247,45 @@ def GetPrompt():
             finalPrompt += c
         
         i+=1
+    return finalPrompt
+#===================================================================================================
+
+
+
+# 5 - Main Functions
+#===================================================================================================
+def AskChatGPTResult(prompt:str):
+    PrintVerbose("Requesting Chat GPT...")
+    promptToSend = [{"role" : "user", "content": prompt}]
+    chat = openai.ChatCompletion.create(
+                model=openAIModel, messages=promptToSend
+            )
+    reply = chat.choices[0].message.content
+    return reply
+
+
+def GetPrompt():
+    with open(GetArgVariable(promptFile, "Prompt File"), 'r', encoding="utf-8") as f:
+        originalPrompt = f.read()
+    
+    finalPrompt = IntegrateElementsInText(originalPrompt)
     finalPrompt += "\n\nEach Part will start like this:\nPart [number]: the text\n\nResult in Français"
     return finalPrompt
 
-def GetPictures(search:str, nbPictures = 3):
+def GenerateAndSavePictures():
     PrintVerbose("Getting Pictures...")
+    global picturesNumber
+    global searchFile
+    global originalPath
 
+    #Get Search
+    lastPath = os.getcwd()
+    os.chdir(originalPath)
+    with open(searchFile, "r") as f:
+        search = IntegrateElementsInText(f.read())
+    os.chdir(lastPath)
+
+    #Get Pictures
     if not movedToProductIDDirectory:
         MoveToProductPath()
 
@@ -251,19 +294,17 @@ def GetPictures(search:str, nbPictures = 3):
         os.mkdir("img/")
     os.chdir(productIDPath + "/img/")
 
-    if nbPictures <= 0:
-        PrintWarningMessage("Number of pictures asked <= 0")
-        return []
+    if picturesNumber <= 0:
+        PrintWarningMessage("Picture Number <= 0, No Images will be downloaded")
+        return
 
     #Get Right Format for google search
-    search = search.replace(" ", "+")
+    search = search.replace("\n", "+").replace(" ", "+")
 
     service = Service(seleniumSearchEngineDriverPath)
     browser = webdriver.Chrome(service=service)
     search_url = f"https://www.google.com/search?site=&tbm=isch&source=hp&biw=1873&bih=990&q={search}"
-    images_url = []
 
-    
     # open browser and begin search
     browser.get(search_url)
     time.sleep(0.5)
@@ -283,62 +324,82 @@ def GetPictures(search:str, nbPictures = 3):
             PrintWarningMessage("Cannot Get Image N°" + count)
             continue
 
-        images_url.append(element.get_attribute("src"))
+        image_url = element.get_attribute("src")
 
         # write image to file
         try:
-            reponse = requests.get(images_url[count])
+            reponse = requests.get(image_url)
             if reponse.status_code == 200:
                 SaveData(f"image-{count+1}.jpg", reponse.content)
             else:
-                PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count)) + str(images_url[count]))
+                PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count)) + str(image_url))
         except:
-            PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count)) + str(images_url[count]))
+            PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count)) + str(image_url))
 
         #Stop
         count += 1
-        if count == nbPictures:
+        if count == picturesNumber:
             break
     browser.close()
 
     os.chdir(productIDPath)
-    return images_url
     
 
-def Main():
-    PrintVerbose("Current Path : " + originalPath)
-    
+
+def GenerateAndSaveText():
+    PrintVerbose("Generating Text...")
     try :
         prompt = GetPrompt()
     except:
-        ErrorMessage("Erreur lors de la génération du prompt", "Prompt Error")
+        ErrorMessage("Error while generating the prompt", "Prompt Error")
 
     if prompt.strip() == "":
-        ErrorMessage("Erreur, Prompt Vide", "Prompt Error")
-
+        ErrorMessage("Empty Prompt?", "Prompt Error")
 
     try:
         chatGPTReply = AskChatGPTResult(prompt)
     except:
-        ErrorMessage("Erreur Chat GPT, \n\t1 - Vérifiez votre connection Internet\n\t2 - Vérifiez votre votre clé API\n\t3 - Vérifiez votre nombres de requêtes restantes via l'API de Open AI\n\t4 - Vérifiez votre Parre Feux", "Chat GPT Error")
+        ErrorMessage("Error while Generating the text with Open AI, \n\t1 - Verify Internet Connection\n\t2 - Verify Open AI API key\n\t3 - Verify Open AI token cap \n\t4 - Verify Firewall", "Open AI Error")
 
     if chatGPTReply.strip() == "":
-        ErrorMessage("Erreur, Réponse de Chat GPT Vide", "Chat GPT Error")
+        ErrorMessage("Empty OpenAI Response", "Open AI Error")
     
     try:
         parts = GetParts(chatGPTReply)
     except:
-        ErrorMessage("Erreur Lors de la séparation des différentes parties du Texte", "Spliting Part Error")
+        ErrorMessage("Error while spliting Text", "Spliting Part Error")
 
     if parts == [] or parts == [""]:
-        ErrorMessage("Erreur, parties vides", "Spliting Part Error")
+        ErrorMessage("Error, Empty Parts", "Spliting Part Error")
 
     MoveToProductPath()
 
     for i in range(len(parts)):
-        SaveData("part"+str(i+1), parts[i], "w")
+        SaveData("text_"+str(i+1), parts[i], "w")
 
-    GetPictures(productEAN13, picturesNumber)
+
+def Main():
+    global toolMode
+    global warningNumber
+    PrintVerbose("Current Path : " + originalPath)
+    
+    match toolMode:
+        case 1:
+            GenerateAndSaveText()
+            GenerateAndSavePictures()
+        case 2:
+            GenerateAndSavePictures()
+        case 3:
+            GenerateAndSaveText()
+
+    print("Progam Finished with {} warning".format(warningNumber))
+        
+    
+
+    
+    
+
+        
 
 
 #===================================================================================================
