@@ -51,13 +51,6 @@ __doc__ =  """Usage: py {0} [Options]
 MADE BY : {1}
 
 This tool is a python script to automate Product Creation and Completion.
-It can be integrated directly in Your Website with some PHP code.
-
-This tool get images from google searchs with chrome+selenium and get some article descriptions made by OpenAI large language models that have to be reviewed by humans due to some of his extravagances.
-
-
-Prompt files and 
-
 
  _____________________________________________________________________________________
 |             OPTIONS:                          Description:                          |
@@ -72,7 +65,7 @@ Prompt files and
 +                                  +                                                  +
 |   -i --ID <Product ID>           |  Set Product ID                                  |
 +                                  +                                                  +
-|   -m --mode <Mode>               |  Set Tool Mode                                   |
+|   -m --mode <Mode>               |  Set Tool Mode, DEFAULT : 1                      |
 +                                  +                                                  +
 |   -p --prompt <File Directory>   |  Use the given prompt file                       |
 +                                  +                                                  +
@@ -82,15 +75,14 @@ Prompt files and
 +                                  +                                                  +
 |   -v --verbose                   |  Verbose Mode                                    |
 +                                  +                                                  +
-|   --picnum <Number>              |  Specify picture number, DEFAULT : 3             |
+|   --pictnum <Number>             |  Specify picture number, DEFAULT : 3             |
 +                                  +                                                  +
 |   --model <Model Name>           |  Specify Open AI LLM, DEFAULT : gpt-3.5-turbo    |
 +                                  +                                                  +
+|   --language <Language>          |  Change chat language text, DEFAULT : English    |
++                                  +                                                  +
 ======================================================================================+
 
-
-
-There is multiple usages for this tool, you can change usages by changing mode.
  ___________________________________________________
 |      MODE:     |         Description:             |
 +===================================================+
@@ -102,8 +94,19 @@ There is multiple usages for this tool, you can change usages by changing mode.
 +                +                                  +
 ====================================================+
 
-        """.format(sys.argv[0], __author__)
-parser = optparse.OptionParser(usage = __doc__, version="SEO_Product_Completion" + __version__, add_help_option = False)
+Exemples :
+    1  | py3 {2} -i 1 -n "LEGO FRIENDS VETERINARY CLINIC" -b "Lego" -e 5702017115160 -p "ExemplePrompt.txt" -s "ExempleRequest.txt" --model "text-davinci-003"
+    Get the pictures and text of the article using as prompt: ExemplePrompt.txt, as picture search: ExempleRequest.txt and as llm text-davinci-003
+
+    2  | py3 {3} -i 3 -n "Super Drum" -m 2 -pictnum 5 -v -o "C:\\Users\\Me\\ScriptResultHere" -s "C:\\Folder1\\Search.txt"
+    Get 5 pictures of Super Drum in C:\\Users\\Me\\ScriptResultHere\\Products\\3\\img using Search.txt and the script is verbose.
+
+    /!\\ If you don't use the brand or EAN13 in your prompt or search files, they aren't required by the script.
+
+If you want more documentation, see the README.md and the Github:https://github.com/4Noy/Automatic-Product-Completion
+
+        """.format(sys.argv[0], __author__, sys.argv[0], sys.argv[0])
+parser = optparse.OptionParser(usage = __doc__, version=__version__, add_help_option = False)
 
 parser.add_option("-h", "--help", dest="help", action="store_true", default=False, help="Show Help Message")
 parser.add_option("-n", "--name", dest="productName", type="string", help="Set Product Name")
@@ -115,8 +118,9 @@ parser.add_option("-p", "--prompt", dest="promptFile", type="string", help="Set 
 parser.add_option("-s", "--search", dest="searchFile", type="string", help="Set the search file")
 parser.add_option("-o", "--output", dest="outputDirectory", type="string", default=os.getcwd(), help="Customize the Directory Output")
 parser.add_option("-v", "--verbose", dest="verbose", action="store_true", default=False, help="Activate Verbose Mode")
-parser.add_option("--picnum", dest="picturesNumber", type="int", default=3, help="Configure Picture Number, DEFAULT : 3")
+parser.add_option("--pictnum", dest="picturesNumber", type="int", default=3, help="Configure Picture Number, DEFAULT : 3")
 parser.add_option("--model", dest="openAIModel", type="string", default="gpt-3.5-turbo", help="Configure Open AI LLM, DEFAULT : gpt-3.5-turbo")
+parser.add_option("--language", dest="language", type="string", default="English", help="Set the search file")
 
 #===================================================================================================
 
@@ -140,6 +144,7 @@ picturesNumber = options.picturesNumber
 toolMode = options.toolMode
 outputDirectory = options.outputDirectory
 openAIModel = options.openAIModel
+language = options.language
 
 warningNumber = 0
 
@@ -194,6 +199,12 @@ def GetArgVariable(variable, variableName):
     else:
         return variable
 
+def ShortLinks(link):
+    if len(link) > 35:
+        return link[:31] + "..."
+    else:
+        return link
+
 def GetParts(chatGPTReply:str):
     parts = re.split(r'Partie\s*\d+\s*:', chatGPTReply)
     parts = [part.strip() for part in parts if part.strip()]
@@ -232,7 +243,7 @@ def IntegrateElementsInText(text):
                 inColumn = False
                 if "brand" in theWordeuuuu:
                     finalPrompt += GetArgVariable(productBrand, "Product Brand")
-                elif "product" in theWordeuuuu:
+                elif "name" in theWordeuuuu:
                     finalPrompt += GetArgVariable(productName, "Product Name")
                 elif "ean" in theWordeuuuu :
                     finalPrompt += GetArgVariable(productEAN13, "Product EAN13")
@@ -269,7 +280,7 @@ def GetPrompt():
         originalPrompt = f.read()
     
     finalPrompt = IntegrateElementsInText(originalPrompt)
-    finalPrompt += "\n\nEach Part will start like this:\nPart [number]: the text\n\nResult in Français"
+    finalPrompt += "\n\nEach Part will start like this:\nPart [number]: the text\n\nResult in " + language
     return finalPrompt
 
 def GenerateAndSavePictures():
@@ -332,9 +343,9 @@ def GenerateAndSavePictures():
             if reponse.status_code == 200:
                 SaveData(f"image-{count+1}.jpg", reponse.content)
             else:
-                PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count)) + str(image_url))
+                PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count)) + ShortLinks(str(image_url)))
         except:
-            PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count)) + str(image_url))
+            PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count)) + ShortLinks(str(image_url)))
 
         #Stop
         count += 1

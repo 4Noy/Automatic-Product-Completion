@@ -1,6 +1,5 @@
 Tasks :
-Mettre que une petite partie des liens dans la console
-Faire des Logs
+Faire en sorte que l'on puisse mettre plusieurs produits
 Ajouter les listes de produits
 Ajouter Fonction Changer de produits
 Faire une init pour configurer la clé API open AI et le chemin SeleniumChromeDriverPath
