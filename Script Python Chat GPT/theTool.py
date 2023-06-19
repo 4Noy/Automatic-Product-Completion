@@ -9,7 +9,6 @@ __credits__ = ["Mev"]
 
 import sys, openai, re, os, time, optparse, random, requests
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
@@ -40,7 +39,13 @@ seleniumSearchEngineDriverPath = "C:\selenium browser drivers\chromedriver.exe"
 setUpMessage = """
 Welcome to the Automatic Product Completion Tool installation.
 This tool is a python script to automate Product Creation and Completion.
-With this initial setup, you will add your OpenAI API key, your Selenium Web Driver path, your default language and your default model.
+With this initial setup, you will add :
+    - your OpenAI API key
+    - your Selenium Web Driver path
+    - your default language
+    - your default chat model
+    - your default prompt file
+    - your default search file
 """
 
 #===================================================================================================
@@ -626,20 +631,21 @@ def AskChatGPTResult(prompt:str):
     return reply
 
 
-def GetPriceFromSimpleSearch(browser):
+def GetPriceFromSimpleSearch(browser, search):
     """
     DOCUMENTATION
         Function: GetPriceFromSimpleSearch
         Description: Get the price of the product from a simple google search
         Input :
             browser - the browser to use
+            search : The search
         Output :
             the price of the product
     """
     global IsOnMainResultPage
     print("Getting Price from Google Search...")
     if not IsOnMainResultPage:
-        search = "https://www.google.com/search?q=\"" + str(GetArgVariable(productEAN13, "Product EAN")) + "\""
+        search = "https://www.google.com/search?q=\"" + search + "\""
         browser.get(search.replace(" ", "+"))
         IsOnMainResultPage = True
         time.sleep(lowestWaitingTime)
@@ -672,20 +678,22 @@ def GetPriceFromSimpleSearch(browser):
     return prices
 
 
-def GetPricesFromGoogleShopping(browser):
+def GetPricesFromGoogleShopping(browser, search):
     """
     DOCUMENTATION
         Function : GetPricesFromGoogleShopping
         Description : Get the prices of the product from google shopping
         Input :
             browser : The browser to use
+            search : The search
         Output :
             prices : The prices of the product
     """
     global IsOnMainResultPage
     print("Getting Price from Google Shopping...")
+
     if not IsOnMainResultPage:
-        search = "https://www.google.com/search?q=\"" + str(GetArgVariable(productEAN13, "Product EAN")) + "\""
+        search = "https://www.google.com/search?q=\"" + search + "\""
         browser.get(search.replace(" ", "+"))
         IsOnMainResultPage = True
         time.sleep(lowestWaitingTime)
@@ -765,12 +773,17 @@ def GetPrice(browser):
     global movedToProductIDDirectory
     global GSP
     MoveToProductPath()
+    lastPath = os.getcwd()
+    os.chdir(originalPath)
+    with open(searchFile, "r") as f:
+        search = IntegrateElementsInText(f.read())
+    os.chdir(lastPath)
 
     if GSP:
-        prices = GetPricesFromGoogleShopping(browser)
+        prices = GetPricesFromGoogleShopping(browser, search)
     else:
-        prices = GetPriceFromSimpleSearch(browser)
-        prices += GetPricesFromGoogleShopping(browser)
+        prices = GetPriceFromSimpleSearch(browser, search)
+        prices += GetPricesFromGoogleShopping(browser, search)
     finalPrice = sum(CleanPrices(prices))/len(prices)
     lastPath = os.getcwd()
     os.chdir(originalPath)
