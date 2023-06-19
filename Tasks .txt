@@ -1,5 +1,5 @@
 Tasks :
-Faire liste des sites refenrence pour que leur prix ai plus de valeur que les autres
+Faire liste des sites reference pour que leur prix ai plus de valeur que les autres
 Faire en sorte que l'on puisse mettre plusieurs produits
 Ajouter les listes de produits
 Ajouter Fonction Changer de produits
