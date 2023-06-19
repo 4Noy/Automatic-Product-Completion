@@ -38,7 +38,9 @@ openai.api_key = "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"
 seleniumSearchEngineDriverPath = "C:\selenium browser drivers\chromedriver.exe"
 
 setUpMessage = """
-
+Welcome to the Automatic Product Completion Tool installation.
+This tool is a python script to automate Product Creation and Completion.
+With this initial setup, you will add your OpenAI API key, your Selenium Web Driver path, your default language and your default model.
 """
 
 #===================================================================================================
@@ -65,7 +67,7 @@ This tool is a python script to automate Product Creation and Completion.
 +                                  +                                                     +
 |   -i --ID <Product ID>           |  Set Product ID                                     |
 +                                  +                                                     +
-|   -m --mode <Mode>               |  Set Tool Mode                                      |
+|   -m --mode <Mode>               |  Set Tool Mode, DEFAULT : 111                       |
 +                                  +                                                     +
 |   -p --prompt <File Directory>   |  Use the given prompt file                          |
 +                                  +                                                     +
@@ -88,13 +90,16 @@ This tool is a python script to automate Product Creation and Completion.
  ___________________________________________________
 |      MODE:     |         Description:             |
 +===================================================+
-| DEFAULT:   1   |  Description, Meta and Pictures  |
+| DEFAULT:  100  |  Descriptions                    |
 +                +                                  +
-|    2           |  Only Pictures                   | 
+|    010         |  Pictures                        | 
 +                +                                  +
-|    3           |  Only Description and Meta       |
+|    001         |  Price                           |
 +                +                                  +
 ====================================================+
+Wich means that 101 will get Descriptions and Price
+and 111 will get Descriptions, Pictures and Price
+
 
 Exemples :
     1  | py3 {2} -i 1 -n "LEGO FRIENDS VETERINARY CLINIC" -b "Lego" -e 5702017115160 -p "ExemplePrompt.txt" -s "ExempleRequest.txt" --model "gpt-3.5-turbo-0613"
@@ -115,7 +120,7 @@ parser.add_option("-n", "--name", dest="productName", type="string", help="Set P
 parser.add_option("-b", "--brand", dest="productBrand", type="string", help="Set Product Brand")
 parser.add_option("-e", "--EAN", dest="productEAN13", type="int", help="Set Product EAN13, must be a number")
 parser.add_option("-i", "--ID", dest="productID", type="int", help= "Set Product ID, must be a number")
-parser.add_option("-m", "--mode", dest="toolMode", type="int", default=1, help="Set the Tool mode, must an existing mode")
+parser.add_option("-m", "--mode", dest="toolMode", type="string", default="111", help="Set the Tool mode, must an existing mode")
 parser.add_option("-p", "--prompt", dest="promptFile", type="string", help="Set the Prompt File")
 parser.add_option("-s", "--search", dest="searchFile", type="string", help="Set the search file")
 parser.add_option("-o", "--output", dest="outputDirectory", type="string", default=os.getcwd(), help="Customize the Directory Output")
@@ -914,18 +919,31 @@ def Main():
     """
     global toolMode
     global warningNumber
+    if len(sys.argv) < 3:
+        print(__doc__)
+        exit(0)
+
+    if productID == None:
+        ErrorMessage("Error, Product ID must be specified")
+
+    if toolMode == "000":
+        ErrorMessage("This little tool is useless if you don't use it, be logical...")
+
     PrintVerbose("Current Path : " + originalPath)
     browser = InitGoogle()
-    match toolMode:
-        case 1:
-            GenerateAndSaveText(browser)
-            GenerateAndSavePictures(browser)
-        case 2:
-            GenerateAndSavePictures(browser)
-        case 3:
-            GenerateAndSaveText(browser)
-        case 4:
-            GetPrice(browser)
+    PrintVerbose("Browser Initialized")
+    #mode to execute different functions
+    if len(toolMode) != 3:
+        ErrorMessage("Error, Tool Mode must be 3 digits long")
+    for i in toolMode:
+        if i != "0" and i != "1":
+            ErrorMessage("Error, Tool Mode must be only digits")
+    if toolMode[0] == "1":
+        GenerateAndSaveText(browser)
+    if toolMode[1] == "1":
+        GenerateAndSavePictures(browser)
+    if toolMode[2] == "1":
+        GetPrice(browser)
 
     browser.quit()
     print("Progam Finished with {} warning".format(warningNumber))
