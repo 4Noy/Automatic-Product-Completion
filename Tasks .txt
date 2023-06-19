@@ -1,8 +1,7 @@
 Tasks :
+Faire liste des sites refenrence pour que leur prix ai plus de valeur que les autres
 Faire en sorte que l'on puisse mettre plusieurs produits
 Ajouter les listes de produits
 Ajouter Fonction Changer de produits
-Faire une init pour configurer la clé API open AI et le chemin SeleniumChromeDriverPath
-Vérifier si le Model chat GPT existe, Signaler quand il ne resque plus beaucoup de Token et tout
-Gerer le delai de réponse web et faire un time Out
-Faire comme Web Chat GPT pour opti les reponses de chat gpt
+Faire une init pour configurer la clé API open AI et le chemin SeleniumChromeDriverPath + prompt de bases et search prompt de base
+Faire site HTML pour interface Homme Machine

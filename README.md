@@ -33,36 +33,36 @@ Tool created by Noy
 
 ## Usage
 
-     _____________________________________________________________________________________
-    |             OPTIONS:                          Description:                          |
-    +=====================================================================================+
-    |   -h --help                      |  Show this help message and exit                 |
-    +                                  +                                                  +
-    |   -n --name <Product Name>       |  Set Product Name                                |
-    +                                  +                                                  +
-    |   -b --brand <Product Brand>     |  Set Product Brand                               |
-    +                                  +                                                  +
-    |   -e --EAN <Product EAN13>       |  Set Product EAN13                               |
-    +                                  +                                                  +
-    |   -i --ID <Product ID>           |  Set Product ID                                  |
-    +                                  +                                                  +
-    |   -m --mode <Mode>               |  Set Tool Mode                                   |
-    +                                  +                                                  +
-    |   -p --prompt <File Directory>   |  Use the given prompt file                       |
-    +                                  +                                                  +
-    |   -s --search <File Directory>   |  Use the given search File to find pictures      |
-    +                                  +                                                  +
-    |   -o --output <Directory>        |  Save the result IN Directory                    |
-    +                                  +                                                  +
-    |   -v --verbose                   |  Verbose Mode                                    |
-    +                                  +                                                  +
-    |   --picnum <Number>              |  Specify picture number, DEFAULT : 3             |
-    +                                  +                                                  +
-    |   --model <Model Name>           |  Specify Open AI LLM, DEFAULT : gpt-3.5-turbo    |
-    +                                  +                                                  +
-    |   --language <Language>          |  Change chat language response                   |
-    +                                  +                                                  +
-    ======================================================================================+
+     ________________________________________________________________________________________
+    |             OPTIONS:                          Description:                             |
+    +========================================================================================+
+    |   -h --help                      |  Show this help message and exit                    |
+    +                                  +                                                     +
+    |   -n --name <Product Name>       |  Set Product Name                                   |
+    +                                  +                                                     +
+    |   -b --brand <Product Brand>     |  Set Product Brand                                  |
+    +                                  +                                                     +
+    |   -e --EAN <Product EAN13>       |  Set Product EAN13                                  |
+    +                                  +                                                     +
+    |   -i --ID <Product ID>           |  Set Product ID                                     |
+    +                                  +                                                     +
+    |   -m --mode <Mode>               |  Set Tool Mode                                      |
+    +                                  +                                                     +
+    |   -p --prompt <File Directory>   |  Use the given prompt file                          |
+    +                                  +                                                     +
+    |   -s --search <File Directory>   |  Use the given search File to find pictures         |
+    +                                  +                                                     +
+    |   -o --output <Directory>        |  Save the result IN Directory                       |
+    +                                  +                                                     +
+    |   -v --verbose                   |  Verbose Mode                                       |
+    +                                  +                                                     +
+    |   --picnum <Number>              |  Specify picture number, DEFAULT : 3                |
+    +                                  +                                                     +
+    |   --model <Model Name>           |  Specify Open AI LLM cht, DEFAULT : gpt-3.5-turbo  |
+    +                                  +                                                     +
+    |   --language <Language>          |  Change chat language response                      |
+    +                                  +                                                     +
+    =========================================================================================+
 
 
 
