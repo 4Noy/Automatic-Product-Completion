@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Intitulé de ma page</title>
+    <!-- Autres balises d'en-tête si nécessaire -->
+  </head>
+  <body>
+    <header>
+      <h1>Automatic-Production-Completion</h1>
+    </header>
+
+    <center>
+      <form method="GET" action="{{ url_for('treatments') }}">
+        <input type="number" name="i" placeholder="ID">
+        <input type="text" name="n" placeholder="Name">
+        <input type="text" name="b" placeholder="Brand">
+        <input type="number" name="e" placeholder="EAN13">
+        <input type="text" name="m" placeholder="Message">
+        <input type="submit" value="Lancer !">
+      </form>
+    </center>
+
+    <?php
+      // Placez votre code PHP ici
+      // Assurez-vous d'avoir le bon chemin vers votre script PHP et de gérer les paramètres correctement
+    ?>
+
+    <!-- Autres éléments HTML et balises si nécessaire -->
+  </body>
+</html>
