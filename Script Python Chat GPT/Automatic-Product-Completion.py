@@ -7,7 +7,7 @@ __version__ = "0.1"
 __credits__ = ["Mev"]
 
 
-import sys, openai, re, os, time, optparse, random, requests
+import sys, openai, re, os, time, optparse, requests, json
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -33,20 +33,199 @@ And an Internet connection :)
 
 # 0 - Init
 #===================================================================================================
-openai.api_key = "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"
-seleniumSearchEngineDriverPath = "C:\selenium browser drivers\chromedriver.exe"
 
-setUpMessage = """
+def is_chat_model(model_name):
+    """
+    DOCUMENTATION
+        Function : is_chat_model
+        Description : Check if the model is a chat model
+        Input :
+            model_name : The name of the model to check
+        Output :
+            True if the model is a chat model, False otherwise
+    """
+    models = openai.Model.list()["data"]
+    for i in models:
+        if model_name == i["id"]:
+            return True
+    return False
+
+def SetupConfig(isFirstTime):
+    print("""
 Welcome to the Automatic Product Completion Tool installation.
 This tool is a python script to automate Product Creation and Completion.
 With this initial setup, you will add :
     - your OpenAI API key
     - your Selenium Web Driver path
+    - your enterprise name (on google shopping)
     - your default language
     - your default chat model
     - your default prompt file
     - your default search file
 """
+)
+    #Verify if the api key is valid
+    global openai
+    global seleniumSearchEngineDriverPath
+    global enterpriseName
+    global defaultLanguage
+    global defaultModel
+    global defaultPrompt
+    global defaultSearch
+    if isFirstTime:
+        time.sleep(2)
+        
+        openai.api_key = input("Enter your OpenAI API key : ")
+        while True:
+            try:
+                openai.Completion.create(engine="davinci", prompt="i", max_tokens=2)
+                break
+            except:
+                print("Your API key is not valid, please try again")
+                openai.api_key = input("Enter your OpenAI API key : ")
+        #Verify if the selenium web driver path is valid
+        seleniumSearchEngineDriverPath = input("Enter your Selenium Web Driver path : ")
+        while True:
+            try:
+                service = Service(seleniumSearchEngineDriverPath)
+                break
+            except:
+                print("Your Selenium Web Driver path is not valid, please try again")
+                seleniumSearchEngineDriverPath = input("Enter your Selenium Web Driver path : ")
+
+        enterpriseName = input("Enter your enterprise name (on google shopping) : ")
+
+        defaultLanguage = input("Enter your default language : ")
+
+        defaultModel = input("Enter your default chat model : ")
+        #verify if the default model is valid
+        while not is_chat_model(defaultModel):
+            print("Your default model is not valid, please try again")
+            defaultModel = input("Enter your default chat model : ")
+        #Verify if the default prompt file is valid
+        defaultPrompt = input("Enter your default prompt file : ")
+        while not os.path.isfile(defaultPrompt):
+            print("Your default prompt file is not valid, please try again")
+            defaultPrompt = input("Enter your default prompt file : ")
+        #Verify if the default search file is valid
+        defaultSearch = input("Enter your default search file : ")
+        while not os.path.isfile(defaultSearch):
+            print("Your default search file is not valid, please try again")
+            defaultSearch = input("Enter your default search file : ")
+    else:
+        jsonFile = open("config.json", "r")
+        config = json.load(jsonFile)
+        jsonFile.close()
+        if "openai_api_key" not in config or input("Do you want to change your OpenAI API key ? (Press Enter to skip, anything else then Enter otherwise)") != "":
+            key = input("Enter your OpenAI API key : ")
+            openai.api_key = key
+            while True:
+                try:
+                    openai.Completion.create(engine="davinci", prompt="i", max_tokens=2)
+                    break
+                except:
+                    print("Your API key is not valid, please try again")
+                    key = input("Enter your OpenAI API key : ")
+            config["openai_api_key"] = key
+        else:
+            openai.api_key = config["openai_api_key"]
+
+        if "selenium_search_engine_driver_path" not in config or input("Do you want to change your Selenium Web Driver path ? (Press Enter to skip, anything else then Enter otherwise)") != "":
+            path = input("Enter your Selenium Web Driver path : ")
+            while True:
+                try:
+                    service = Service(path)
+                    break
+                except:
+                    print("Your Selenium Web Driver path is not valid, please try again")
+                    path = input("Enter your Selenium Web Driver path : ")
+            seleniumSearchEngineDriverPath = path
+            config["selenium_search_engine_driver_path"] = path
+        else:
+            seleniumSearchEngineDriverPath = config["selenium_search_engine_driver_path"]
+
+        if "enterprise_name" not in config or input("Do you want to change your enterprise name (on google shopping) ? (Press Enter to skip, anything else then Enter otherwise)") != "":
+            name = input("Enter your enterprise name (on google shopping) : ")
+            enterpriseName = name
+            config["enterprise_name"] = name
+        else:
+            enterpriseName = config["enterprise_name"]
+
+        if "default_language" not in config or input("Do you want to change your default language ? (Press Enter to skip, anything else then Enter otherwise)") != "":
+            language = input("Enter your default language : ")
+            defaultLanguage = language
+            config["default_language"] = language
+        else:
+            defaultLanguage = config["default_language"]
+
+        if "default_model" not in config or input("Do you want to change your default chat model ? (Press Enter to skip, anything else then Enter otherwise)") != "":
+            model = input("Enter your default chat model : ")
+        
+            while not is_chat_model(model):
+                print("Your default model is not valid, please try again")
+                model = input("Enter your default chat model : ")
+            defaultModel = model
+            config["default_model"] = model
+        else:
+            defaultModel = config["default_model"]
+
+        if "default_prompt" not in config or input("Do you want to change your default prompt file ? (Press Enter to skip, anything else then Enter otherwise)") != "":
+            prompt = input("Enter your default prompt file : ")
+            #Verify if the default prompt file is valid
+            while not os.path.isfile(prompt):
+                print("Your default prompt file is not valid, please try again")
+                prompt = input("Enter your default prompt file : ")
+            defaultPrompt = prompt
+            config["default_prompt"] = prompt
+        else:
+            defaultPrompt = config["default_prompt"]
+
+        if "default_search" not in config or input("Do you want to change your default search file ? (Press Enter to skip, anything else then Enter otherwise)") != "":
+            search = input("Enter your default search file : ")
+            #Verify if the default search file is valid
+            while not os.path.isfile(search):
+                print("Your default search file is not valid, please try again")
+                search = input("Enter your default search file : ")
+            defaultSearch = search
+            config["default_search"] = search     
+        else:
+            defaultSearch = config["default_search"]
+        #Add the modified config to the config.json file
+    config = {
+        "openai_api_key": openai.api_key,
+        "selenium_search_engine_driver_path": seleniumSearchEngineDriverPath,
+        "enterprise_name": enterpriseName,
+        "default_language": defaultLanguage,
+        "default_model": defaultModel,
+        "default_prompt": defaultPrompt,
+        "default_search": defaultSearch
+    }   
+    jsonFile = open("config.json", "w+")
+    jsonFile.write(json.dumps(config))
+    jsonFile.close()
+    print("Your configuration has been saved in the config.json file")
+    exit(0)
+
+corruptedConfig = False
+
+if os.path.isfile("config.json"):
+    jsonFile = open("config.json", "r")
+    config = json.load(jsonFile)
+    jsonFile.close()
+    try:
+        openai.api_key = config["openai_api_key"]
+        seleniumSearchEngineDriverPath = config["selenium_search_engine_driver_path"]
+        enterpriseName = config["enterprise_name"]
+        defaultLanguage = config["default_language"]
+        defaultModel = config["default_model"]
+        defaultPrompt = config["default_prompt"]
+        defaultSearch = config["default_search"]
+    except:
+        print("Your config.json file is corrupted, please do the setup again")
+        corruptedConfig = True
+else:
+    SetupConfig(True)
+    
 
 #===================================================================================================
 
@@ -82,13 +261,15 @@ This tool is a python script to automate Product Creation and Completion.
 +                                  +                                                     +
 |   -v --verbose                   |  Verbose Mode                                       |
 +                                  +                                                     +
-|   --picnum <Number>              |  Specify picture number, DEFAULT : 3                |
+|   --picnum <Number>              |  Specify picture number, DEFAULT : 5                |
 +                                  +                                                     +
 |   --model <Model Name>           |  Specify Open AI LLM chat, DEFAULT : gpt-3.5-turbo  |
 +                                  +                                                     +
 |   --language <Language>          |  Change chat language response                      |
 +                                  +                                                     +
 |   --GSP                          |  Get the price only with google shopping            |
++                                  +                                                     +
+|   --config                       |  Initialize or modify the config File               |
 +                                  +                                                     +
 =========================================================================================+
 
@@ -113,7 +294,7 @@ Exemples :
     2  | py3 {3} -i 3 -n "Super Drum" -m 2 -pictnum 5 -v -o "C:\\Users\\Me\\ScriptResultHere" -s "C:\\Folder1\\Search.txt"
     Get 5 pictures of Super Drum in C:\\Users\\Me\\ScriptResultHere\\Products\\3\\img using Search.txt and the script is verbose.
 
-    /!\\ If you don't use the brand or Name in your prompt or search files, they aren't required by the script. But EAN13 and ID are required /!\\
+    /!\\ If you don't use the brand, Name or EAN13 in your prompt or search files, they aren't required by the script. But ID is required /!\\
 
 If you want more documentation, see the README.md and the Github:https://github.com/4Noy/Automatic-Product-Completion
 
@@ -130,10 +311,11 @@ parser.add_option("-p", "--prompt", dest="promptFile", type="string", help="Set 
 parser.add_option("-s", "--search", dest="searchFile", type="string", help="Set the search file")
 parser.add_option("-o", "--output", dest="outputDirectory", type="string", default=os.getcwd(), help="Customize the Directory Output")
 parser.add_option("-v", "--verbose", dest="verbose", action="store_true", default=False, help="Activate Verbose Mode")
-parser.add_option("--pictnum", dest="picturesNumber", type="int", default=3, help="Configure Picture Number, DEFAULT : 3")
-parser.add_option("--model", dest="openAIModel", type="string", default="gpt-3.5-turbo", help="Configure Open AI LLM, DEFAULT : gpt-3.5-turbo")
-parser.add_option("--language", dest="language", type="string", default="English", help="Set the search file")
+parser.add_option("--pictnum", dest="picturesNumber", type="int", default=5, help="Configure Picture Number, DEFAULT : 3")
+parser.add_option("--model", dest="openAIModel", type="string", help="Configure Open AI LLM, DEFAULT : gpt-3.5-turbo")
+parser.add_option("--language", dest="language", type="string", help="Set the search file")
 parser.add_option("--GSP", dest="GSP", action="store_true", default=False, help="Get the price only with google shopping")
+parser.add_option("--config", dest="modifyConfigFile", action="store_true", default=False, help="Set the search file")
 
 #===================================================================================================
 
@@ -143,6 +325,10 @@ parser.add_option("--GSP", dest="GSP", action="store_true", default=False, help=
 #===================================================================================================
 (options, args) = parser.parse_args()
 
+if options.modifyConfigFile or corruptedConfig:
+    SetupConfig(False)
+    exit(0)
+
 if options.help:
     print(__doc__)
     exit(0)
@@ -151,20 +337,36 @@ productID = options.productID
 productName = options.productName
 productBrand = options.productBrand
 productEAN13 = options.productEAN13
-promptFile = options.promptFile
-searchFile = options.searchFile
+
+if options.promptFile is None:
+    promptFile = defaultPrompt
+else:
+    promptFile = options.promptFile
+
+if options.searchFile is None:
+    searchFile = defaultSearch
+else:
+    searchFile = options.searchFile
 picturesNumber = options.picturesNumber
 toolMode = options.toolMode
 outputDirectory = options.outputDirectory
-openAIModel = options.openAIModel
-language = options.language
+if options.openAIModel is None:
+    openAIModel = defaultModel
+else:
+    openAIModel = options.openAIModel
+if options.language is None:
+    language = defaultLanguage
+else:
+    language = options.language
 verbose = options.verbose
 GSP = options.GSP
 
 warningNumber = 0
 
-lowestWaitingTime = 0.5
-highestWaitingTime = 1
+lowestWaitingTime = 0
+highestWaitingTime = 0.2
+lowestWaitingTimeForPictures = 0.2
+highestWaitingTimeForPictures = 0.5
 
 IsOnMainResultPage = False
 
@@ -275,8 +477,8 @@ def ShortLinks(link):
         Output :
             The shorted link
     """
-    if len(link) > 35:
-        return link[:31] + "..."
+    if len(link) > 66:
+        return link[:63] + "..."
     else:
         return link
 
@@ -312,8 +514,9 @@ def CleanPrices(prices):
     """
     if len(prices) > 1:
         seuil = 0.2
-        moy = sum(prices) / len(prices)
-        prices = [p for p in prices if p >= moy * (1 - seuil) and p <= moy * (1 + seuil)]
+        #get the average of prices
+        average = sum([p for (_, p) in prices]) / len(prices)
+        prices = [(seller,p) for (seller, p) in prices if p >= average * (1 - seuil) and p <= average * (1 + seuil)]
     if len(prices) < 3:
         PrintWarningMessage("Be Careful, Under 3 princes were found, the price may be wrong")
     return prices
@@ -346,19 +549,19 @@ def MoveToProductPath():
             None
     """
     if not os.path.isdir(outputDirectory+"/Products/") :
-        print("Creating Directory : Products/")
+        PrintVerbose("Creating Directory : Products/")
         os.mkdir(outputDirectory+'/Products/')
     os.chdir(outputDirectory + "/Products")
 
     if not os.path.isdir(GetArgVariable(str(productID), "Product ID") + "/"):
-        print("Creating Directory : Products/productID")
+        PrintVerbose("Creating Directory : Products/productID")
         os.mkdir(str(productID) + "/")
     os.chdir(outputDirectory + "/Products/" + str(productID) + "/")
 
     movedToProductIDDirectory = True
 
 
-def SaveData(fileName:str ,data, mode = "wb"):
+def SaveData(fileName:str ,data, mode = "wb", moveToProductIDDirectory = True):
     """
     DOCUMENTATION
         Function : SaveData
@@ -370,7 +573,7 @@ def SaveData(fileName:str ,data, mode = "wb"):
         Output :
             None
     """
-    if not movedToProductIDDirectory:
+    if not movedToProductIDDirectory and moveToProductIDDirectory:
         MoveToProductPath()
 
     if os.path.isfile(fileName):
@@ -378,22 +581,6 @@ def SaveData(fileName:str ,data, mode = "wb"):
     with open(fileName, mode) as f:
         f.write(data)
 
-
-def is_chat_model(model_name):
-    """
-    DOCUMENTATION
-        Function : is_chat_model
-        Description : Check if the model is a chat model
-        Input :
-            model_name : The name of the model to check
-        Output :
-            True if the model is a chat model, False otherwise
-    """
-    models = openai.Model.list()["data"]
-    for i in models:
-        if model_name == i["id"]:
-            return True
-    return False
     
 
 def IntegrateElementsInText(text):
@@ -594,13 +781,14 @@ def AskChatGPTResult(prompt:str):
         Output :
             None
     """
+    """
     if len(prompt) > 2048:
         enter = ""
         while enter != "yes" and enter != "no":
             enter =input("Prompt is {} long, are you sure you want to continue? [yes][no]".format(len(prompt)))
         if enter == "no":
             ErrorMessage("Prompt too long, exiting...")
-
+    """
     global openAIModel
     #Verify if the model is a valid chat model
     if not is_chat_model(openAIModel) :
@@ -643,12 +831,13 @@ def GetPriceFromSimpleSearch(browser, search):
             the price of the product
     """
     global IsOnMainResultPage
-    print("Getting Price from Google Search...")
+    PrintVerbose("Getting Price from Google Search...")
     if not IsOnMainResultPage:
-        search = "https://www.google.com/search?q=\"" + search + "\""
+        search = "https://www.google.com/search?q=" + search 
         browser.get(search.replace(" ", "+"))
         IsOnMainResultPage = True
         time.sleep(lowestWaitingTime)
+    
 
     classNameOfFooterInGoogleSearch = "fG8Fp"
     try:
@@ -674,7 +863,7 @@ def GetPriceFromSimpleSearch(browser, search):
             if "€" in son.text:
                 #Get only the price
                 price = son.text.replace("€", "").replace(" ", "").replace(",", ".")
-                prices.append(float(price))
+                prices.append(("", float(price)))
     return prices
 
 
@@ -690,10 +879,10 @@ def GetPricesFromGoogleShopping(browser, search):
             prices : The prices of the product
     """
     global IsOnMainResultPage
-    print("Getting Price from Google Shopping...")
+    PrintVerbose("Getting Price from Google Shopping...")
 
     if not IsOnMainResultPage:
-        search = "https://www.google.com/search?q=\"" + search + "\""
+        search = "https://www.google.com/search?q=" + search
         browser.get(search.replace(" ", "+"))
         IsOnMainResultPage = True
         time.sleep(lowestWaitingTime)
@@ -743,13 +932,27 @@ def GetPricesFromGoogleShopping(browser, search):
         #delete poster price to not have duplicate
         filtredPrices = []
         for price in prices:
-            #get dad of price
+            #Verify if the price is in the table and add the name of the seller
             if price.find_element(By.XPATH, "..").get_attribute("class") == "SH30Lb":
-                filtredPrices.append(price)
-        prices = [float(price.text.replace("€", "").replace(" ", "").replace(",", ".")) for price in filtredPrices]
+                filtredPrices.append((price.find_element(By.XPATH, "..").find_element(By.XPATH, "..").find_element(By.XPATH, "td[1]/div[1]/a").text, price))
+        prices = [(seller,float(price.text.replace("€", "").replace(" ", "").replace(",", "."))) for (seller, price) in filtredPrices]
         return prices
     
-            
+def GetRecommendedPrice(price):
+    """
+    DOCUMENTATION
+        Function : GetRecommendedPrice
+        Description : Get the recommended price of the product
+        Input :
+            price : The price of the product
+        Output :
+            The recommended price of the product
+    """
+    price *= 1
+    if price - int(price) <= 0.5:
+        return int(price) + 0.5
+    else:
+        return int(price) +0.9
 
 #===================================================================================================
 
@@ -771,6 +974,7 @@ def GetPrice(browser):
 
     """
     global movedToProductIDDirectory
+    global yourEnterprisePrice
     global GSP
     MoveToProductPath()
     lastPath = os.getcwd()
@@ -784,10 +988,45 @@ def GetPrice(browser):
     else:
         prices = GetPriceFromSimpleSearch(browser, search)
         prices += GetPricesFromGoogleShopping(browser, search)
-    finalPrice = sum(CleanPrices(prices))/len(prices)
+
+    if prices == []:
+        ErrorMessage("No Price Found")
+    prices = CleanPrices(prices)
+    s = 0
+    yourEnterprisePrice = -1
+    for (seller,price) in prices:
+        s += price
+        if enterpriseName.replace(" ", "").lower() in seller.replace(" ", "").lower():
+            yourEnterprisePrice = price
+
+    #sort the list by price
+    prices = sorted(prices, key=lambda x: x[1])
+    #get the position of yourEnterprisePrice
+    if yourEnterprisePrice != -1:
+        for i in range(len(prices)):
+            if prices[i][1] == yourEnterprisePrice:
+                yourEnterprisePricePosition = i
+                break
+        PrintVerbose("{} Price is the lowest price".format(enterpriseName) if yourEnterprisePricePosition == 0 else "Your Enterprise Price is the {}th lowest price".format(yourEnterprisePricePosition+1))
+    else:
+        PrintVerbose("{} Price Not Found".format(enterpriseName)) 
+
+    lowestPrice = prices[0][1]
+    highestPrice = prices[-1][1]
+    average = s/len(prices)
+    finalPrice = GetRecommendedPrice(average)
+    stringPrices = ""
+    emptyNames = 0
+    for i in range(len(prices)):
+        if prices[i][0] != "":
+            stringPrices += "{} - {} : {}\n".format(i+1 - emptyNames, prices[i][0], prices[i][1])
+        else:
+            emptyNames += 1
     lastPath = os.getcwd()
     os.chdir(originalPath)
-    SaveData("Price.txt", str(finalPrice), "w")
+    SaveData("Price.txt", \
+             "Recomanded Price : {finalPrice}\n\nAverage Price : {average}\nLowest Price : {lowestPrice}\nHighest Price : {highestPrice}\n\n{VendorAndPrice}"\
+                .format(finalPrice=finalPrice, lowestPrice=lowestPrice, highestPrice = highestPrice, VendorAndPrice=stringPrices, average=average), "w")
     os.chdir(lastPath)
 
 
@@ -806,7 +1045,7 @@ def GenerateAndSavePictures(browser):
     global searchFile
     global originalPath
     global IsOnMainResultPage
-    IsOnMainResultPage = True
+    IsOnMainResultPage = False
 
     #Get Search
     lastPath = os.getcwd()
@@ -822,7 +1061,9 @@ def GenerateAndSavePictures(browser):
     productIDPath = os.getcwd()
     if not os.path.isdir("img/"):
         os.mkdir("img/")
+        PrintVerbose("Created img/ directory")
     os.chdir(productIDPath + "/img/")
+
 
     if picturesNumber <= 0:
         PrintWarningMessage("Picture Number <= 0, No Images will be downloaded")
@@ -845,39 +1086,62 @@ def GenerateAndSavePictures(browser):
             images = browser.find_elements(By.CLASS_NAME, 'rg_i') 
         except:
             ErrorMessage("Google Images Request Error")
-
+    
+    #Get images
     count = 0
     for image in images:
         #Get images source url
         image.click()
         # wait for the image to popup
-        time.sleep(lowestWaitingTime)
+        time.sleep(lowestWaitingTimeForPictures)
         try:
             element = browser.find_element(By.XPATH, "/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div[2]/div/div[2]/div[2]/div[2]/c-wiz/div/div/div/div[3]/div[1]/a/img[1]")
-        except Exception as e:
-            PrintWarningMessage("Error : {} , Cannot Get Image N°".format(e) + count)
-            continue
+            if element.get_attribute("src").startswith("data:image/"):
+                time.sleep(lowestWaitingTimeForPictures)
+                raise Exception("Incorrect Img")
         except:
-            PrintWarningMessage("Cannot Get Image N°" + count)
-
+            PrintWarningMessage("Getting Image Link N°{} Error, Trying Again...".format(str(count+1)))
+            time.sleep(highestWaitingTimeForPictures)
+            try:
+                element = browser.find_element(By.XPATH, "/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div[2]/div/div[2]/div[2]/div[2]/c-wiz/div/div/div/div[3]/div[1]/a/img[1]")
+                if element.get_attribute("src").startswith("data:image/"):
+                    raise Exception("You must wait more between each image if you want to get more images")
+            except Exception as e:
+                PrintWarningMessage("Error : {} , Cannot Get Image Link N°".format(ShortLinks(str(e))) + str(count+1))
+                continue
+            except:
+                PrintWarningMessage("Cannot Get Image Link N°" + str(count+1))
+                continue
         image_url = element.get_attribute("src")
-
         # write image to file
         try:
             reponse = requests.get(image_url)
+            time.sleep(lowestWaitingTimeForPictures)
             if reponse.status_code == 200:
-                SaveData(f"image-{count+1}.jpg", reponse.content)
+                SaveData(f"image-{count+1}.jpg", reponse.content, moveToProductIDDirectory=False)
+                count += 1
             else:
-                PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count)) + ShortLinks(str(image_url)))
+                PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
         except:
-            PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count)) + ShortLinks(str(image_url)))
-
+            PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
+            time.sleep(highestWaitingTimeForPictures)
+            try:
+                reponse = requests.get(image_url)
+                if reponse.status_code == 200:
+                    SaveData(f"image-{count+1}.jpg", reponse.content, moveToProductIDDirectory=False)
+                    count += 1
+                else:
+                    PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
+            except:
+                PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
         #Stop
-        count += 1
         if count == picturesNumber:
             break
     
-
+    if count < picturesNumber:
+        PrintWarningMessage("Only {} Images were downloaded".format(str(count+1)))
+    else:
+        PrintVerbose("All {} Images were downloaded".format(str(count+1)))
     os.chdir(productIDPath)
     
 
@@ -959,7 +1223,7 @@ def Main():
         GetPrice(browser)
 
     browser.quit()
-    print("Progam Finished with {} warning".format(warningNumber))
+    print("Program Finished with {} warning".format(warningNumber))
         
     
 

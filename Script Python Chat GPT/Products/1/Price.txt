@@ -1,1 +1,14 @@
-14.605
+Recomanded Price : 17.9
+
+Average Price : 17.755714285714287
+Lowest Price : 14.9
+Highest Price : 19.99
+
+1 - le monde Imaginaire : 14.9
+2 - Starplayer : 16.9
+3 - Mon Ludicaire : 17.9
+4 - Ludocortex : 18.0
+5 - Fnac : 18.0
+6 - Rakuten : 18.0
+7 - Les Dés masKés : 18.0
+8 - King Jouet : 19.99

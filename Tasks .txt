@@ -1,7 +1,5 @@
 Tasks :
-Faire liste des sites reference pour que leur prix ai plus de valeur que les autres
-Faire en sorte que l'on puisse mettre plusieurs produits
-Ajouter les listes de produits
-Ajouter Fonction Changer de produits
-Faire une init pour configurer la clé API open AI et le chemin SeleniumChromeDriverPath + prompt de bases et search prompt de base
 Faire site HTML pour interface Homme Machine
+Faire liste des sites reference pour que leur prix ai plus de valeur que les autres
+Optis sur le prompt et multithreading
+Faire en sorte que l'on puisse mettre plusieurs produits
