@@ -536,6 +536,12 @@ def GetParts(chatGPTReply:str):
     #split the parts with "Partie thing.. :" deleting : too
     parts = re.split(r'Partie\s*\d+\s*:', chatGPTReply)
     parts = [part.strip() for part in parts if part.strip()]
+
+    #If the is all parts in one partn try to split with Part X : instead of Partie X :
+    if len(parts) == 1:
+        parts = re.split(r'Part\s*\d+\s*:', chatGPTReply)
+        parts = [part.strip() for part in parts if part.strip()]
+
     return parts
 
 

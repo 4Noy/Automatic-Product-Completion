@@ -54,30 +54,67 @@ def treatments():
 
     tool.Main()
 
-    page = f"""
+    page = """
     <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Intitule de ma page</title>
-    <link rel="stylesheet" href="templates/style.css">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+function copyText(id) {
+    // Sélectionner le texte à copier (remplacez "texte-a-copier" par l'ID ou la classe de votre élément texte)
+    var textToCopy = document.getElementById(id);
+
+    // Créer une zone de texte temporaire
+    var tempTextArea = document.createElement("textarea");
+    tempTextArea.value = textToCopy.textContent;
+
+    // Ajouter la zone de texte temporaire à la page
+    document.body.appendChild(tempTextArea);
+
+    // Sélectionner le texte dans la zone de texte temporaire
+    tempTextArea.select();
+
+    // Copier le texte dans le presse-papiers
+    document.execCommand("copy");
+
+    // Supprimer la zone de texte temporaire
+    document.body.removeChild(tempTextArea);
+    }
+</script>
   </head>
-  <body>
+  <body>"""
+    page +=f"""
     <h1>Automatic Product Completion - Product ID : {request.args['i']}</h1>
-    <center>
     """
 
     if tm[0] == "1": #Descriptions
-        page += f"<h2>Descriptions</h2>"
+        page += f"<h2 id=\"texte-a-copier\">Descriptions</h2>"
         descriptionsPath = f"Products/{request.args['i']}"
         descriptionsFiles = os.listdir(descriptionsPath)
+        j = 0
         for i in descriptionsFiles:
+            j+=1
             if i.startswith("text_"):
-                page += f"<p>{i}</p>"
                 with open(f"{descriptionsPath}/{i}", "r", encoding='utf_8') as f:
                     v = f.read().replace("\n", "<br>")
-                    page += f"<p>{v}</p>"
+                    page += f"<button onclick=\"copyText('{j}')\">Copy</button><p id = '{j}' style=\"font-size:14pt;line-height:107%;font-family:Arial, sans-serif;\">{v}</p>"
+                page += "<br>"
     if tm[1] == "1": #Images
+        page += "<center>"
         page += f"<h2>Images</h2><div class=\"image-container\">"
         imgPath = f"Products/{request.args['i']}/img"
         imagesFiles = os.listdir(imgPath)
@@ -86,13 +123,13 @@ def treatments():
             page += f"{request.args['i']}/img/{img}"
             page += "')}}\"  width=\"auto\" height=\"auto\">"
         page += "</div>"
+        page += "</center>"
     if tm[2] == "1": #Price
         page += f"<h2>Price</h2>"
         pricePath = f"Products/{request.args['i']}"
         priceFiles = os.listdir(pricePath)
         for i in priceFiles:
             if i.startswith("price"):
-                page += f"<p>{i}</p>"
                 with open(f"{pricePath}/{i}", "r", encoding='utf_8') as f:
                     v = f.read().replace("\n", "<br>")
                     page += f"<p>{v}</p>"

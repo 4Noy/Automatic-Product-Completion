@@ -66,9 +66,6 @@ My product categories are :
   Pop-Up
   P\'tit loup & Loup
   T\'choupi
-  Un à trois ans
-  Trois à cinq ans
-  Cinq ans et plus
   Montessori
   Mobilier
   Plein air
@@ -150,16 +147,6 @@ My product categories are :
   Maquillage
   Jeux de société
   Par âges
-  Deux ans et plus
-  Trois ans et plus
-  Quatre ans et plus
-  Cinq ans et plus
-  Six ans et plus
-  Sept ans et plus
-  Huit ans et plus
-  Neuf ans et plus
-  Dix ans et plus
-  Douze ans et plus
   Adultes
   La sélection du Monde Imaginaire
   Pour jouer avec les enfants
@@ -184,51 +171,6 @@ My product categories are :
   Unlock
   Jeux primés
   L\'as d\'or
-  As D\'or 2021
-  2020
-  2019
-  2018
-  2017
-  2016
-  2015
-  2014
-  2013
-  2012
-  2011
-  2010
-  2009
-  2008
-  2007
-  2006
-  2005
-  2004
-  2003
-  2002
-  2001
-  2000
-  L\'As d\'or 2022
-  Le Spiel des Jahres
-  2021
-  2020
-  2019
-  2018
-  2017
-  2016
-  2015
-  2014
-  2013
-  2012
-  2011
-  2010
-  2009
-  2008
-  2007
-  2006
-  2005
-  2004
-  2003
-  2002
-  2001
   Livres-jeux
   Occasions
   Classiques et puzzles
@@ -272,4 +214,4 @@ In three parts
 
 A first part: 20 words MAXIMUM to make you want to buy
 And a second part: 60 words MAXIMUM the description of the product and a list after the description if you got the informations : AGE, CONTENT of the product, game time, number of players, composition, product material, SIZE
-a third part: Categories of the Product be careful not to say it is for baby if the use age is over 2 years old and do not say that it is for little children if the use age is over 5 years old 
+a third part: Categories of the Product be careful not to say it is for baby if the use age is over 2 years old and do not say that it is for little children if the use age is over 5 years old. Put the product in at least 3-5 categories.
