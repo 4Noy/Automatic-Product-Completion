@@ -514,7 +514,7 @@ def CleanPrices(prices):
             prices : A list of prices
     """
     if len(prices) > 1:
-        seuil = 0.2
+        seuil = 0.3
         #get the average of prices
         average = sum([p for (_, p) in prices]) / len(prices)
         prices = [(seller,p) for (seller, p) in prices if p >= average * (1 - seuil) and p <= average * (1 + seuil)]
@@ -562,7 +562,7 @@ def MoveToProductPath():
     movedToProductIDDirectory = True
 
 
-def SaveData(fileName:str ,data, mode = "wb", moveToProductIDDirectory = True):
+def SaveData(fileName:str ,data, mode = "wb", moveToProductIDDirectory = True, encoding = ""):
     """
     DOCUMENTATION
         Function : SaveData
@@ -579,8 +579,13 @@ def SaveData(fileName:str ,data, mode = "wb", moveToProductIDDirectory = True):
 
     if os.path.isfile(fileName):
         os.remove(fileName)
-    with open(fileName, mode) as f:
-        f.write(data)
+    
+    if encoding == "":
+        with open(fileName, mode) as f:
+            f.write(data)
+    else:
+        with open(fileName, mode, encoding=encoding) as f:
+            f.write(data)
 
     
 
@@ -678,7 +683,7 @@ def GetInternetSearchSites(browser):
     try:
         sites = [(site.find_element(By.XPATH, ".//*")).get_attribute("href") for site in browser.find_elements(By.CLASS_NAME, "yuRUbf")]    
     except:
-        PrintWarningMessage("Getting Google results Error, Trying Again...")
+        PrintVerbose("Getting Google results Error, Trying Again...")
         time.sleep(highestWaitingTime)
         try:
             sites = [(site.find_element(By.XPATH, ".//*")).get_attribute("href") for site in browser.find_elements(By.CLASS_NAME, "yuRUbf")]
@@ -704,13 +709,21 @@ def GetPrompt(browser):
         with open(GetArgVariable(promptFile, "Prompt File"), 'r', encoding="utf-8") as f:
             originalPrompt = f.read()
     except FileNotFoundError:
-        ErrorMessage("Prompt File Not Found")
+        PrintWarningMessage("Prompt File Not Found, Getting default prompt")
+        with open(GetArgVariable(defaultPrompt, "Prompt File"), 'r', encoding="utf-8") as f:
+            originalPrompt = f.read()
     except UnicodeDecodeError:
-        ErrorMessage("Prompt File Not UTF-8 Encoded")
+        PrintWarningMessage("Prompt File Not UTF-8 Encoded, Getting default prompt")
+        with open(GetArgVariable(defaultPrompt, "Prompt File"), 'r', encoding="utf-8") as f:
+            originalPrompt = f.read()
     except Exception as e:
-        ErrorMessage("Prompt File Error", e)
+        PrintWarningMessage("Prompt File Error", e, "Getting default prompt")
+        with open(GetArgVariable(defaultPrompt, "Prompt File"), 'r', encoding="utf-8") as f:
+            originalPrompt = f.read()
     except:
-        ErrorMessage("Prompt File Error")
+        ErrorMessage("Prompt File Error Getting default prompt")
+        with open(GetArgVariable(defaultPrompt, "Prompt File"), 'r', encoding="utf-8") as f:
+            originalPrompt = f.read()
 
     finalPrompt = """Disregard any previous instructions.
 
@@ -762,7 +775,7 @@ def InitGoogle():
     try:
         element = browser.find_element(By.XPATH, "/html/body/div[2]/div[3]/div[3]/span/div/div/div/div[3]/div[1]/button[1]")
     except:
-        PrintWarningMessage("Google Consent Error, Trying Again...")
+        PrintVerbose("Google Consent Error, Trying Again...")
         time.sleep(highestWaitingTime)
         try:
             element = browser.find_element(By.XPATH, "/html/body/div[2]/div[3]/div[3]/span/div/div/div/div[3]/div[1]/button[1]")
@@ -844,7 +857,7 @@ def GetPriceFromSimpleSearch(browser, search):
     try:
         footers = browser.find_elements(By.CLASS_NAME, classNameOfFooterInGoogleSearch)
     except:
-        PrintWarningMessage("Getting Price Error, Trying Again...")
+        PrintVerbose("Getting Price Error, Trying Again...")
         time.sleep(highestWaitingTime)
         try:
             footers = browser.fin(By.CLASS_NAME, classNameOfFooterInGoogleSearch)
@@ -896,7 +909,7 @@ def GetPricesFromGoogleShopping(browser, search):
     try:
         buttons = browser.find_elements(By.CLASS_NAME, topButtonClass)
     except:
-        PrintWarningMessage("Getting Shopping button Error, Trying Again...")
+        PrintVerbose("Getting Shopping button Error, Trying Again...")
         time.sleep(highestWaitingTime)
         try:
             buttons = browser.fin(By.CLASS_NAME, topButtonClass)
@@ -916,7 +929,7 @@ def GetPricesFromGoogleShopping(browser, search):
         try:
             link = browser.find_element(By.XPATH, "/html/body/div[6]/div/div[4]/div[4]/div/div[3]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[1]/div/div/a").get_attribute("href")
         except:
-            PrintWarningMessage("Getting Shopping Product Link Error, Trying Again...")
+            PrintVerbose("Getting Shopping Product Link Error, Trying Again...")
             time.sleep(highestWaitingTime)
             try:
                 link = browser.find_element(By.XPATH, "/html/body/div[6]/div/div[4]/div[4]/div/div[3]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[1]/div/div/a").get_attribute("href")
@@ -927,7 +940,7 @@ def GetPricesFromGoogleShopping(browser, search):
         try:
             prices = browser.find_elements(By.CLASS_NAME, "g9WBQb")
         except:
-            PrintWarningMessage("Getting Shopping Product Price Error, Trying Again...")
+            PrintVerbose("Getting Shopping Product Price Error, Trying Again...")
             time.sleep(highestWaitingTime)
             try:
                 prices = browser.find_elements(By.CLASS_NAME, "g9WBQb")
@@ -995,6 +1008,9 @@ def GetPrice(browser):
 
     if prices == []:
         ErrorMessage("No Price Found")
+
+    print(prices)
+
     prices = CleanPrices(prices)
     s = 0
     yourEnterprisePrice = -1
@@ -1028,9 +1044,9 @@ def GetPrice(browser):
             emptyNames += 1
     lastPath = os.getcwd()
     os.chdir(originalPath)
-    SaveData("Price.txt", \
+    SaveData("price.txt", \
              "Recomanded Price : {finalPrice}\n\nAverage Price : {average}\nLowest Price : {lowestPrice}\nHighest Price : {highestPrice}\n\n{VendorAndPrice}"\
-                .format(finalPrice=finalPrice, lowestPrice=lowestPrice, highestPrice = highestPrice, VendorAndPrice=stringPrices, average=average), "w")
+                .format(finalPrice=finalPrice, lowestPrice=lowestPrice, highestPrice = highestPrice, VendorAndPrice=stringPrices, average=average), "w", encoding="utf-8")
     os.chdir(lastPath)
 
 
@@ -1084,7 +1100,7 @@ def GenerateAndSavePictures(browser):
     try:
         images = browser.find_elements(By.CLASS_NAME, 'rg_i') 
     except:
-        PrintWarningMessage("Google Images Request Error, Trying Again...")
+        PrintVerbose("Google Images Request Error, Trying Again...")
         time.sleep(highestWaitingTime)
         try:
             images = browser.find_elements(By.CLASS_NAME, 'rg_i') 
@@ -1104,7 +1120,7 @@ def GenerateAndSavePictures(browser):
                 time.sleep(lowestWaitingTimeForPictures)
                 raise Exception("Incorrect Img")
         except:
-            PrintWarningMessage("Getting Image Link N°{} Error, Trying Again...".format(str(count+1)))
+            PrintVerbose("Getting Image Link N°{} Error, Trying Again...".format(str(count+1)))
             time.sleep(highestWaitingTimeForPictures)
             try:
                 element = browser.find_element(By.XPATH, "/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div[2]/div/div[2]/div[2]/div[2]/c-wiz/div/div/div/div[3]/div[1]/a/img[1]")
@@ -1185,7 +1201,7 @@ def GenerateAndSaveText(browser):
     MoveToProductPath()
 
     for i in range(len(parts)):
-        SaveData("text_"+str(i+1)+".txt", parts[i], "w")
+        SaveData("text_"+str(i+1)+".txt", parts[i], "w", encoding="utf-8")
 
 
 def Main():
@@ -1229,6 +1245,7 @@ def Main():
         GetPrice(browser)
 
     browser.quit()
+    os.chdir(originalPath)
     print("Program Finished with {} warning".format(warningNumber))
         
     

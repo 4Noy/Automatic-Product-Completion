@@ -1,5 +1,9 @@
 Tasks :
 Faire site HTML pour interface Homme Machine
+Opti le site pour controle C auto
+Faire en sorte que l'on puisse demander au script des résultats avec plusieurs pc, en gros, enlever les chdir par directement la direction.
+faire menu deroulant pour le choix des modes
+Modifier Clean Price pour que ça prenne bien les trucs genre que ça supp pas les 1.2€ parcque t'a un 1€
 Faire liste des sites reference pour que leur prix ai plus de valeur que les autres
 Optis sur le prompt et multithreading
 Faire en sorte que l'on puisse mettre plusieurs produits
