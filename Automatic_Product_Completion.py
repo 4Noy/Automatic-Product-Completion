@@ -33,6 +33,7 @@ And an Internet connection :)
 
 # 0 - Init
 #===================================================================================================
+isWebSiteUsage = False
 
 def is_chat_model(model_name):
     """
@@ -304,8 +305,8 @@ parser = optparse.OptionParser(usage = __doc__, version=__version__, add_help_op
 parser.add_option("-h", "--help", dest="help", action="store_true", default=False, help="Show Help Message")
 parser.add_option("-n", "--name", dest="productName", type="string", help="Set Product Name")
 parser.add_option("-b", "--brand", dest="productBrand", type="string", help="Set Product Brand")
-parser.add_option("-e", "--EAN", dest="productEAN13", type="int", help="Set Product EAN13, must be a number")
-parser.add_option("-i", "--ID", dest="productID", type="int", help= "Set Product ID, must be a number")
+parser.add_option("-e", "--EAN", dest="productEAN13", type="string", help="Set Product EAN13")
+parser.add_option("-i", "--ID", dest="productID", type="string", help= "Set Product ID")
 parser.add_option("-m", "--mode", dest="toolMode", type="string", default="111", help="Set the Tool mode, must an existing mode")
 parser.add_option("-p", "--prompt", dest="promptFile", type="string", help="Set the Prompt File")
 parser.add_option("-s", "--search", dest="searchFile", type="string", help="Set the search file")
@@ -852,7 +853,7 @@ def GetPriceFromSimpleSearch(browser, search):
     
 
     if footers == []:
-        ErrorMessage("No Price Found")
+        PrintWarningMessage("No Price Found from Simple Search")
 
     #Get the sons of the footer
     #Get the price in footer sons
@@ -863,7 +864,10 @@ def GetPriceFromSimpleSearch(browser, search):
             if "€" in son.text:
                 #Get only the price
                 price = son.text.replace("€", "").replace(" ", "").replace(",", ".")
-                prices.append(("", float(price)))
+                try:
+                    prices.append(("", float(price)))
+                except:
+                    PrintWarningMessage("Ce prix n'est pas un nombre")
     return prices
 
 
@@ -1196,7 +1200,9 @@ def Main():
     """
     global toolMode
     global warningNumber
-    if len(sys.argv) < 3:
+    global isWebSiteUsage
+
+    if not isWebSiteUsage and len(sys.argv) < 3:
         print(__doc__)
         exit(0)
 
