@@ -1,6 +1,4 @@
 Tasks :
-Mettre pour les textes, le code source avec les span et tt pour direct controle C controle V
-Opti le site pour controle C auto
 Faire en sorte que l'on puisse demander au script des résultats avec plusieurs pc, en gros, enlever les chdir par directement la direction.
 Faire menu deroulant pour le choix des modes
 Modifier Clean Price pour que ça prenne bien les trucs genre que ça supp pas les 1.2€ parcque t'a un 1€
