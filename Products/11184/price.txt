@@ -1,0 +1,11 @@
+Recomanded Price : 19.5
+
+Average Price : 19.455714285714286
+Lowest Price : 17.9
+Highest Price : 22.9
+
+1 - Philibert : 17.9
+2 - La Redoute : 18.75
+3 - Fnac : 18.75
+4 - AC-Déco.com : 20.99
+5 - King Jouet : 22.9
