@@ -3,7 +3,6 @@
 
 from flask import Flask, render_template, request, send_from_directory
 import subprocess, os
-import Automatic_Product_Completion as tool
 
 """
 To run the Website, and with all need from the main script
@@ -11,48 +10,65 @@ NEEDS :
 Flask (pip install flask)
 """
 
+
+
 app = Flask(__name__)
 nbRequestChatGPT = 0
 
 @app.route('/')
 def index():
-    tool.isWebSiteUsage = True
-    return render_template('index.html')
+    brands = []
+    if os.path.exists("Brands.txt"):
+        with open("Brands.txt", "r", encoding="utf-8") as f:
+            brands = sorted(f.read().split("\n"))
+    return render_template('index.html', brands=brands)
 
 @app.route('/product_images/<path:filename>')
 def product_images(filename):
     return send_from_directory('Products', filename)
 
-@app.route('/treatments')
-def treatments():
+@app.route('/treatments_<id_product>')
+def treatments(id_product):
     global nbRequestChatGPT
-    tool.isWebSiteUsage = True
     try:
-        tool.productID = request.args['i']
-        tool.productName = request.args['n']
-        tool.productBrand = request.args['b']
-        tool.productEAN13 = request.args['e']
-        tool.toolMode = request.args['m']
+        productName = request.args['n']
+        productBrand = request.args['b']
+        productEAN13 = request.args['e']
+        modes = request.args.getlist('m')
     except:
         return "Error, please check your inputs"
-    tool.verbose = True
-    if request.args['m'] == "":
-        tool.toolMode = "111"
-        tm = "111"
+    tm = ""
+    if "desc" in modes:
+        tm += "1"
     else:
-        tm = request.args['m']
+        tm += "0"
+    if "imgs" in modes:
+        tm += "1"
+    else:
+        tm += "0"
+    if "pric" in modes:
+        tm += "1"
+    else:
+        tm += "0"
 
-    # Exécute le script Python et capture la sortie
-    
-    #result = subprocess.run(['py', '../Automatic_Product_Completion.py', f"-i \"{i}\" -n \"{n}\" -b \"{b}\" -e \"{e}\" -m \"{m}\""], capture_output=True, text=True)
-
-    if request.args['i'] == "1":
+    if id_product == "1":
         nbRequestChatGPT += 1
 
-    if nbRequestChatGPT > 10 :
+    if nbRequestChatGPT > 100 :
         print("Much Request to Chat GPT, must have big cost")
+    
+    script_Path = os.getcwd() + "/Automatic_Product_Completion.py"
 
-    tool.Main()
+    if productBrand == "Brand" or productBrand == "":
+        args = ["-v", "-i", id_product, "-n", productName, "-e", productEAN13, "-m", tm]
+    else:
+        args = ["-v", "-i", id_product, "-n", productName, "-b", productBrand, "-e", productEAN13, "-m", tm]
+
+    
+
+    
+
+    subprocess.call(["python", script_Path] + args)
 
     page = """
     <!DOCTYPE html>
@@ -75,35 +91,32 @@ def treatments():
 </style>
     <script>
 function copyText(id) {
-    // Sélectionner le texte à copier (remplacez "texte-a-copier" par l'ID ou la classe de votre élément texte)
     var textToCopy = document.getElementById(id);
 
-    // Créer une zone de texte temporaire
     var tempTextArea = document.createElement("textarea");
     tempTextArea.value = textToCopy.textContent;
 
-    // Ajouter la zone de texte temporaire à la page
     document.body.appendChild(tempTextArea);
 
-    // Sélectionner le texte dans la zone de texte temporaire
     tempTextArea.select();
 
-    // Copier le texte dans le presse-papiers
     document.execCommand("copy");
 
-    // Supprimer la zone de texte temporaire
     document.body.removeChild(tempTextArea);
     }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
 </script>
   </head>
   <body>"""
     page +=f"""
-    <h1>Automatic Product Completion - Product ID : {request.args['i']}</h1>
+    <h1>Automatic Product Completion - Product ID : {id_product}</h1>  <button onclick="goBack()">Back</button>
     """
 
     if tm[0] == "1": #Descriptions
         page += f"<h2 id=\"texte-a-copier\">Descriptions</h2>"
-        descriptionsPath = f"Products/{request.args['i']}"
+        descriptionsPath = f"Products/{id_product}"
         descriptionsFiles = os.listdir(descriptionsPath)
         j = 0
         for i in descriptionsFiles:
@@ -114,19 +127,18 @@ function copyText(id) {
                     page += f"<button onclick=\"copyText('{j}')\">Copy</button><p id = '{j}' style=\"font-size:14pt;line-height:107%;font-family:Arial, sans-serif;\">{v}</p>"
                 page += "<br>"
     if tm[1] == "1": #Images
-        page += "<center>"
-        page += f"<h2>Images</h2><div class=\"image-container\">"
-        imgPath = f"Products/{request.args['i']}/img"
+        page += "<center><h2>Images</h2><div class=\"image-container\">"
+        imgPath = f"Products/{id_product}/img"
         imagesFiles = os.listdir(imgPath)
         for img in imagesFiles:
             page += "<img src=\"{{ url_for('product_images', filename='"
-            page += f"{request.args['i']}/img/{img}"
+            page += f"{id_product}/img/{img}"
             page += "')}}\"  width=\"auto\" height=\"auto\">"
         page += "</div>"
         page += "</center>"
     if tm[2] == "1": #Price
         page += f"<h2>Price</h2>"
-        pricePath = f"Products/{request.args['i']}"
+        pricePath = f"Products/{id_product}"
         priceFiles = os.listdir(pricePath)
         for i in priceFiles:
             if i.startswith("price"):
@@ -137,10 +149,10 @@ function copyText(id) {
     page += "</center>  </body> </html>"
 
     #write the page
-    with open("templates/treatments.html", "w", encoding="utf-8") as f:
+    with open(f"templates/treatments_{id_product}.html", "w", encoding="utf-8") as f:
         f.write(page)
 
-    return render_template('treatments.html', encoding='utf-8')
+    return render_template(f'treatments_{id_product}.html', encoding='utf-8', id_product=id_product)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

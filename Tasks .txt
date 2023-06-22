@@ -1,8 +1,12 @@
 Tasks :
-Ne pas qu'il mette autre chose que la description dans le parties pour sjute avoir à copy paste
-Faire en sorte que l'on puisse demander au script des résultats avec plusieurs pc, en gros, enlever les chdir par directement la direction.
-Faire menu deroulant pour le choix des modes
-Modifier Clean Price pour que ça prenne bien les trucs genre que ça supp pas les 1.2€ parcque t'a un 1€
+Pour les images, ajouter les images google shopping
+
+À partir de l'EAN, trouver le nom du produit, la marque et l'afficher pour que l'utilisateur puisse voir si le nom du produit est correct et complete la brand, exemple avec google shopping
+
 Faire liste des sites reference pour que leur prix ai plus de valeur que les autres
-Optis sur le prompt et multithreading
+
 Faire en sorte que l'on puisse mettre plusieurs produits
+
+Bouton Regen du texte
+
+Aller chercher les images sur des sites prioritaires genre poule à pois etc...
