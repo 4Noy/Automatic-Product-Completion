@@ -630,21 +630,14 @@ def CreateProductDir():
     global changingDirectory
 
     changingDirectory = True
-    try:
-        if not os.path.isdir(outputDirectory+"/Products/") :
-            PrintVerbose("Creating Directory : Products/")
-            os.mkdir(outputDirectory+'/Products/')
-    except:
-        pass
-
+    if not os.path.isdir(outputDirectory+"/Products/") :
+        PrintVerbose("Creating Directory : Products/")
+        os.mkdir(outputDirectory+'/Products/')
     os.chdir(outputDirectory + "/Products")
 
-    try:
-        if not os.path.isdir(GetArgVariable(str(productID), "Product ID") + "/"):
-            PrintVerbose("Creating Directory : Products/productID")
-            os.mkdir(str(productID) + "/")
-    except:
-        pass
+    if not os.path.isdir(GetArgVariable(str(productID), "Product ID") + "/"):
+        PrintVerbose("Creating Directory : Products/productID")
+        os.mkdir(str(productID) + "/")
     os.chdir(outputDirectory + "/Products/" + str(productID) + "/")
 
     os.chdir(originalPath)
@@ -1203,10 +1196,10 @@ def GenerateAndSavePictures(browser, cleanName):
 
 
     with open(searchFile, "r") as f:
-        sentenceSearch = IntegrateElementsInText(f.read()).replace("\n", "+").replace(" ", "+")
+        search = IntegrateElementsInText(f.read())
 
     if not IsOnMainResultPage:
-        search = "https://www.google.com/search?q=" + sentenceSearch
+        search = "https://www.google.com/search?q=" + search
         GetUrl(search.replace(" ", "+"), browser)
         IsOnMainResultPage = True
         time.sleep(lowestWaitingTime)
@@ -1230,66 +1223,65 @@ def GenerateAndSavePictures(browser, cleanName):
 
     if not ShoppingButtonFinded:
         PrintWarningMessage("No Shopping Button Found")
+        return
     else:
         time.sleep(lowestWaitingTime)
         try:
             link = browser.find_element(By.XPATH, "/html/body/div[6]/div/div[4]/div[4]/div/div[3]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[1]/div/div/a").get_attribute("href")
-            do = True
         except:
             PrintVerbose("Getting Shopping Product Link Error, Trying Again...")
             time.sleep(highestWaitingTime)
             try:
                 link = browser.find_element(By.XPATH, "/html/body/div[6]/div/div[4]/div[4]/div/div[3]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[1]/div/div/a").get_attribute("href")
-                do = True
             except:
                 PrintWarningMessage("Getting Shopping Product Link Error")
-                do = False
-        if do :
-            GetUrl(link, browser)
-            classImgOnGoogleShopping = "Xkiaqc"
+                return
+        GetUrl(link, browser)
+    classImgOnGoogleShopping = "Xkiaqc"
+    time.sleep(lowestWaitingTimeForPictures)
+    try:
+        dadImages_url = browser.find_elements(By.CLASS_NAME, classImgOnGoogleShopping)
+    except:
+        PrintVerbose("Getting Images on Google Shopping Error, Trying Again...")
+        time.sleep(highestWaitingTime)
+        try:
+            dadImages_url = browser.find_elements(By.CLASS_NAME, classImgOnGoogleShopping)
+        except:
+            PrintWarningMessage("Getting Images on Google Shopping Error")
+            return
+    for dadImage_url in dadImages_url:
+        #Get src of the first son of dadImage_url
+        image_url = dadImage_url.find_element(By.XPATH, "./*").get_attribute("src")
+        try:
+            reponse = requests.get(image_url)
             time.sleep(lowestWaitingTimeForPictures)
+            if reponse.status_code == 200:
+                
+                SaveData(f"img/image-{count+1}_{cleanName}.idk", reponse.content, moveToProductIDDirectory=False)
+                time.sleep(1)
+                im = Image.open(f"Products/{productID}/img/image-{count+1}_{cleanName}.idk").convert("RGB")
+                im.save(f"Products/{productID}/img/image-{count+1}_{cleanName}.jpg", "jpeg")
+                #delete the .idk file
+                os.remove(f"Products/{productID}/img/image-{count+1}_{cleanName}.idk")
+                count += 1
+            else:
+                PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
+        except:
+            PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
+            time.sleep(highestWaitingTimeForPictures)
             try:
-                dadImages_url = browser.find_elements(By.CLASS_NAME, classImgOnGoogleShopping)
+                reponse = requests.get(image_url)
+                if reponse.status_code == 200:
+                    SaveData(f"img/image-{count+1}_{cleanName}.idk", reponse.content, moveToProductIDDirectory=False)
+                    im = Image.open(f"img/image-{count+1}_{cleanName}.idk").convert("RGB")
+                    im.save(f"Products/{productID}/img/image-{count+1}_{cleanName}.jpg", "jpeg")
+                    #delete the .idk file
+                    os.remove(f"Products/{productID}/img/image-{count+1}_{cleanName}.idk")
+                    count += 1
+                else:
+                    PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
             except:
-                PrintVerbose("Getting Images on Google Shopping Error, Trying Again...")
-                time.sleep(highestWaitingTime)
-                try:
-                    dadImages_url = browser.find_elements(By.CLASS_NAME, classImgOnGoogleShopping)
-                except:
-                    PrintWarningMessage("Getting Images on Google Shopping Error")
-                    return
-            for dadImage_url in dadImages_url:
-                #Get src of the first son of dadImage_url
-                image_url = dadImage_url.find_element(By.XPATH, "./*").get_attribute("src")
-                try:
-                    reponse = requests.get(image_url)
-                    time.sleep(lowestWaitingTimeForPictures)
-                    if reponse.status_code == 200:
-                        
-                        SaveData(f"img/image-{count+1}_{cleanName}.idk", reponse.content, moveToProductIDDirectory=False)
-                        im = Image.open(f"Products/{productID}/img/image-{count+1}_{cleanName}.idk").convert("RGB")
-                        im.save(f"Products/{productID}/img/image-{count+1}_{cleanName}.jpg", "jpeg")
-                        #delete the .idk file
-                        os.remove(f"Products/{productID}/img/image-{count+1}_{cleanName}.idk")
-                        count += 1
-                    else:
-                        PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
-                except:
-                    PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
-                    time.sleep(highestWaitingTimeForPictures)
-                    try:
-                        reponse = requests.get(image_url)
-                        if reponse.status_code == 200:
-                            SaveData(f"img/image-{count+1}_{cleanName}.idk", reponse.content, moveToProductIDDirectory=False)
-                            im = Image.open(f"img/image-{count+1}_{cleanName}.idk").convert("RGB")
-                            im.save(f"Products/{productID}/img/image-{count+1}_{cleanName}.jpg", "jpeg")
-                            #delete the .idk file
-                            os.remove(f"Products/{productID}/img/image-{count+1}_{cleanName}.idk")
-                            count += 1
-                        else:
-                            PrintWarningMessage("Cannot Get Image N°{} from URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
-                    except:
-                        PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
+                PrintWarningMessage("Error While Requesting Image N°{} URL - url:".format(str(count+1)) + ShortLinks(str(image_url)))
 
     PrintVerbose("Getting Pictures...")
     global picturesNumber
@@ -1301,7 +1293,8 @@ def GenerateAndSavePictures(browser, cleanName):
         return
 
     #Get Right Format for google search
-    search_url = f"https://www.google.com/search?site=&tbm=isch&source=hp&biw=1873&bih=990&q={sentenceSearch}"
+    search = search.replace("\n", "+").replace(" ", "+")
+    search_url = f"https://www.google.com/search?site=&tbm=isch&source=hp&biw=1873&bih=990&q={search}"
 
     # begin search
     GetUrl(search_url, browser)
@@ -1447,6 +1440,7 @@ def Main():
     if toolMode == "000":
         ErrorMessage("This little tool is useless if you don't use it, be logical...")
 
+    PrintVerbose("Current Path : " + originalPath)
     #mode to execute different functions
     if len(toolMode) != 3:
         ErrorMessage("Error, Tool Mode must be 3 digits long")
@@ -1458,11 +1452,11 @@ def Main():
             c+=1
     if c > 1:
 
-        PrintVerbose("Current Path : " + originalPath)
+
 
         script_Path = os.getcwd() + "/Automatic_Product_Completion.py"
         args = ["-v", "-i", productID, "-n", productName, "-b", productBrand, "-e", productEAN13, "-m"]
-        print("productID : " + productID, "productName : " + productName, "productBrand : " + productBrand, "productEAN13 : " + productEAN13, sep="\n")
+
         processes = []
         if toolMode[0] == "1":
             processes.append(subprocess.Popen(["python", script_Path] + args + ["100"]))

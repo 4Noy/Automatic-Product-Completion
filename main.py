@@ -114,37 +114,40 @@ function copyText(id) {
     <h1>Automatic Product Completion - Product ID : {id_product}</h1>  <button onclick="goBack()">Back</button>
     """
 
-    if tm[0] == "1": #Descriptions
-        page += f"<h2 id=\"texte-a-copier\">Descriptions</h2>"
-        descriptionsPath = f"Products/{id_product}"
-        descriptionsFiles = os.listdir(descriptionsPath)
-        j = 0
-        for i in descriptionsFiles:
-            j+=1
-            if i.startswith("text_"):
-                with open(f"{descriptionsPath}/{i}", "r", encoding='utf_8') as f:
-                    v = f.read().replace("\n", "<br>")
-                    page += f"<button onclick=\"copyText('{j}')\">Copy</button><p id = '{j}' style=\"font-size:14pt;line-height:107%;font-family:Arial, sans-serif;\">{v}</p>"
-                page += "<br>"
-    if tm[1] == "1": #Images
-        page += "<center><h2>Images</h2><div class=\"image-container\">"
-        imgPath = f"Products/{id_product}/img"
+    #if tm[0] == "1": #Descriptions
+    page += f"<h2 id=\"texte-a-copier\">Descriptions</h2>"
+    descriptionsPath = f"Products/{id_product}"
+    descriptionsFiles = os.listdir(descriptionsPath)
+    j = 0
+    for i in descriptionsFiles:
+        j+=1
+        if i.startswith("text_"):
+            with open(f"{descriptionsPath}/{i}", "r", encoding='utf_8') as f:
+                v = f.read().replace("\n", "<br>")
+                page += f"<button onclick=\"copyText('{j}')\">Copy</button><p id = '{j}' style=\"font-size:14pt;line-height:107%;font-family:Arial, sans-serif;\">{v}</p>"
+            page += "<br>"
+    #if tm[1] == "1": #Images
+    page += "<center><h2>Images</h2><div class=\"image-container\">"
+    imgPath = f"Products/{id_product}/img"
+    try:
         imagesFiles = os.listdir(imgPath)
         for img in imagesFiles:
             page += "<img src=\"{{ url_for('product_images', filename='"
             page += f"{id_product}/img/{img}"
             page += "')}}\"  width=\"auto\" height=\"auto\">"
-        page += "</div>"
-        page += "</center>"
-    if tm[2] == "1": #Price
-        page += f"<h2>Price</h2>"
-        pricePath = f"Products/{id_product}"
-        priceFiles = os.listdir(pricePath)
-        for i in priceFiles:
-            if i.startswith("price"):
-                with open(f"{pricePath}/{i}", "r", encoding='utf_8') as f:
-                    v = f.read().replace("\n", "<br>")
-                    page += f"<p>{v}</p>"
+    except:
+        pass
+    page += "</div>"
+    page += "</center>"
+    #if tm[2] == "1": #Price
+    page += f"<h2>Price</h2>"
+    pricePath = f"Products/{id_product}"
+    priceFiles = os.listdir(pricePath)
+    for i in priceFiles:
+        if i.startswith("price"):
+            with open(f"{pricePath}/{i}", "r", encoding='utf_8') as f:
+                v = f.read().replace("\n", "<br>")
+                page += f"<p>{v}</p>"
 
     page += "</center>  </body> </html>"
 

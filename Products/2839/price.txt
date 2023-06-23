@@ -1,0 +1,14 @@
+Recomanded Price : 44.5
+
+Average Price : 44.34461538461539
+Lowest Price : 35.9
+Highest Price : 54.96
+
+1 - Made in Bébé : 39.9
+2 - La Redoute : 39.9
+3 - Cdiscount Marketplace : 39.9
+4 - Rakuten - FamConcept : 39.9
+5 - Trousselier : 39.95
+6 - Carrefour Marketplace : 48.45
+7 - Darty : 53.35
+8 - Fnac : 54.05

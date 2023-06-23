@@ -1,0 +1,42 @@
+
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+function copyText(id) {
+    var textToCopy = document.getElementById(id);
+
+    var tempTextArea = document.createElement("textarea");
+    tempTextArea.value = textToCopy.textContent;
+
+    document.body.appendChild(tempTextArea);
+
+    tempTextArea.select();
+
+    document.execCommand("copy");
+
+    document.body.removeChild(tempTextArea);
+    }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
+</script>
+  </head>
+  <body>
+    <h1>Automatic Product Completion - Product ID : 36532</h1>  <button onclick="goBack()">Back</button>
+    <h2 id="texte-a-copier">Descriptions</h2><button onclick="copyText('3')">Copy</button><p id = '3' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Un carnet d'activités pour les explorateurs en herbe!</p><br><button onclick="copyText('4')">Copy</button><p id = '4' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Les Mini Mondes Jordanie est un carnet d'activités à destination des enfants de 4 à 7 ans. Il propose 44 pages d'histoires, de jeux, de coloriages, mais aussi des initiations linguistiques, de la musique et 60 autocollants [[1](https://www.jeux-de-traverse.com/carnets-d-activites/1043-les-mini-mondes-jordanie-4-7-ans-9782491536572.html)]. Votre enfant pourra découvrir la Jordanie au travers d'un voyage en van avec la famille Duchemin, une petite famille d'explorateurs [[2](https://www.littlemarmaille.fr/produit/carnet-de-voyage-4-7-ans-la-jordanie-les-mini-mondes/)]. Ce carnet est rempli de contenu fun et pédagogique, conçu avec des instituteurs et des experts [[1](https://www.jeux-de-traverse.com/carnets-d-activites/1043-les-mini-mondes-jordanie-4-7-ans-9782491536572.html)].</p><br><button onclick="copyText('5')">Copy</button><p id = '5' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Voyage et découverte<br>- Livres d'activités<br>- Carnets de voyage<br>- Jeux de société pour enfants</p><br><center><h2>Images</h2><div class="image-container"><img src="{{ url_for('product_images', filename='36532/img/image-1_MAGAZINE_JORDANIE_4_7_ANS___LES_MINI_MONDES.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='36532/img/image-2_MAGAZINE_JORDANIE_4_7_ANS___LES_MINI_MONDES.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='36532/img/image-3_MAGAZINE_JORDANIE_4_7_ANS___LES_MINI_MONDES.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='36532/img/image-4_MAGAZINE_JORDANIE_4_7_ANS___LES_MINI_MONDES.jpg')}}"  width="auto" height="auto"></div></center><h2>Price</h2><p>Recomanded Price : 8.5<br><br>Average Price : 8.4<br>Lowest Price : 6.9<br>Highest Price : 12.9<br><br></p></center>  </body> </html>

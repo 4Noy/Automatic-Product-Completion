@@ -1,5 +1,14 @@
-Tasks :
-Pour les images, ajouter les images google shopping
+Tasks 
+
+Résolve captcha Google
+
+Faire les produits, les mini mondes
+
+Rajouter les caractéristiques dans une 4eme partie
+
+Faire en sorte que quand on copy avec le bouton, ça copie le format aussi
+
+Pouvoir regen le prompt et le modifier
 
 À partir de l'EAN, trouver le nom du produit, la marque et l'afficher pour que l'utilisateur puisse voir si le nom du produit est correct et complete la brand, exemple avec google shopping
 
