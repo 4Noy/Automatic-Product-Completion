@@ -1,1 +1,10 @@
-{"openai_api_key": "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", "selenium_search_engine_driver_path": "C:\\selenium browser drivers\\chromedriver.exe", "enterprise_name": "Le Monde Imaginaire", "default_language": "Fran\u00e7ais", "default_model": "gpt-3.5-turbo", "default_prompt": "PromptsAndSearchs\\ExemplePrompt.txt", "default_prompt_no_brand": "PromptsAndSearchs/ExemplePromptNoBrand.txt", "default_search": "PromptsAndSearchs\\ExempleSearch.txt"}
+{
+  "openai_api_key": "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",
+  "selenium_search_engine_driver_path": "C:\\selenium browser drivers\\chromedriver.exe",
+  "enterprise_name": "Le Monde Imaginaire",
+  "default_language": "Fran\u00e7ais",
+  "default_model": "gpt-3.5-turbo",
+  "default_prompt": "PromptsAndSearchs\\ExemplePrompt.txt",
+  "default_prompt_no_brand": "PromptsAndSearchs/ExemplePromptNoBrand.txt",
+  "default_search": "PromptsAndSearchs\\ExempleSearch.txt"
+}

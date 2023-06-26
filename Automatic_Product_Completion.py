@@ -8,12 +8,15 @@ __credits__ = ["Mev"]
 
 
 import sys, openai, re, os, time, optparse, requests, json, threading, subprocess, unidecode
+from selenium_recaptcha_solver import RecaptchaSolver
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 from pathlib import Path
 from PIL import Image
+
 
 """
 NEEDS :
@@ -21,6 +24,7 @@ Python 3 - to install : go on the website https://www.python.org/
 openai python package - to install : pip install openai
 selenium python package - to install : pip install selenium
 unidecode python packa - to install : pip install Unidecode
+selenium-recaptcha-solver - to install : pip install selenium-recaptcha-solver
 Chrome app - to install : go on the website https://www.google.com/chrome/
 Chromium web driver - to install : go on the website https://chromedriver.chromium.org/downloads
 
@@ -36,6 +40,7 @@ And an Internet connection :)
 #===================================================================================================
 isWebSiteUsage = False
 lock = threading.Lock()
+
 
 def is_chat_model(model_name):
     """
@@ -54,6 +59,15 @@ def is_chat_model(model_name):
     return False
 
 def SetupConfig(isFirstTime):
+    """
+    DOCUMENTATION
+        Function : SetupConfig
+        Description : Setup the config file
+        Input :
+            isFirstTime : True if it's the first time you use the tool, False otherwise
+        Output :
+            None
+    """
     print("""
 Welcome to the Automatic Product Completion Tool installation.
 This tool is a python script to automate Product Creation and Completion.
@@ -589,7 +603,7 @@ def GetParts(chatGPTReply:str):
 
     return parts
 
-def GetUrl(url, browser):
+def GetUrl(url, browser, recaptchaSolver):
     """
     DOCUMENTATION
         Function : GetUrl
@@ -607,9 +621,17 @@ def GetUrl(url, browser):
     time.sleep(lowestWaitingTime)
 
     if "/sorry/" in browser.current_url:
-        print("Google Captcha Error, need human verification")
-        while "/sorry/" in browser.current_url:
+        PrintVerbose("Google Captcha, trying to solve it...")
+        i = 0
+        while "/sorry/" in browser.current_url and i < 10:
+            try:
+                recaptchaSolver.click_recaptcha_v2(iframe=browser.find_element(By.XPATH, '//iframe[@title="reCAPTCHA"]'))
+            except:
+                PrintWarningMessage("Error while solving the captcha, trying again...")
             time.sleep(0.5)
+            i += 1
+        if i == 10:
+            ErrorMessage("Error while solving the captcha, stopping the program")
 
     return browser.current_url
 
@@ -619,7 +641,6 @@ def CreateProductDir():
     """
     DOCUMENTATION
         Function : CreateProductDir
-    
         Description : Move to the product path
         Input :
             None
@@ -730,7 +751,7 @@ def IntegrateElementsInText(text):
 def GetWebPageText(url:str):
     """
     DOCUMENTATION
-        Funtion : GetWebPageText
+        Function : GetWebPageText
         Description : Get the text of a web page
         Input :
             url : the url of the web page
@@ -739,7 +760,11 @@ def GetWebPageText(url:str):
             textClean : the text of the web page
     """
     time.sleep(lowestWaitingTime)
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except:
+        PrintWarningMessage("The url : " + ShortLinks(url) + " is not valid")
+        return "", ""
     try:
         textToClean = BeautifulSoup(response.text, "html.parser").find_all("p")
     except:
@@ -762,10 +787,10 @@ def GetWebPageText(url:str):
         return title, textClean[:500]
 
 
-def GetInternetSearchSites(browser):
+def GetInternetSearchSites(browser, recaptchaSolver):
     """
     DOCUMENTATION
-        Funtion : GetInternetSearchSites
+        Function : GetInternetSearchSites
         Description : Get the first 10 results of a google search
         Input :
             browser : the browser used to get the results
@@ -777,7 +802,7 @@ def GetInternetSearchSites(browser):
     
     
     search = "https://www.google.com/search?q=\"" + str(GetArgVariable(productEAN13, "Product EAN"))+ "\""
-    GetUrl(search.replace(" ", "+"), browser)
+    GetUrl(search.replace(" ", "+"), browser, recaptchaSolver)
 
     #Get all sons of elements in browser.find_elements(By.CLASS_NAME, "yuRUbf"), "yuRUbf" is the class name of the div containing the link to the website
     #Then get the href attribute of the first element in the div
@@ -796,7 +821,7 @@ def GetInternetSearchSites(browser):
         return sites
 
 
-def GetPrompt(browser):
+def GetPrompt(browser, recaptchaSolver):
     """
     DOCUMENTATION
         Function : GetPrompt
@@ -834,7 +859,7 @@ It's possible that the question or instruction, or just a portion of it, require
 \"\"\"
     """.format(Question = IntegrateElementsInText(originalPrompt), Date = time.strftime("%Y-%m-%dT%H:%M:%S%z"))
 
-    sites = GetInternetSearchSites(browser)
+    sites = GetInternetSearchSites(browser, recaptchaSolver)
     if len(sites) == 0:
         PrintWarningMessage("No Google Results Found")
     elif len(sites) < 3:
@@ -871,12 +896,22 @@ def InitGoogle():
         Output : 
             None
     """
+    #ua = "Mozilla/5.0 (Windows NT 4.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36"
+    ua= "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    options = Options()
+    #options.add_argument("--headless")
+    options.add_argument(f'--user-agent={ua}')
+    options.add_argument('--no-sandbox')
+    options.add_argument("--disable-extensions")
+
     service = Service(seleniumSearchEngineDriverPath)
-    browser = webdriver.Chrome(service=service)
+    browser = webdriver.Chrome(service=service, options=options)
     search_url = f"https://www.google.com/"
+    
+    recaptchaSolver = RecaptchaSolver(driver=browser)
 
     # open browser and begin search
-    GetUrl(search_url, browser)
+    GetUrl(search_url, browser, recaptchaSolver)
 
     # wait till the web response is received
     time.sleep(lowestWaitingTime)
@@ -892,8 +927,8 @@ def InitGoogle():
         except:
             ErrorMessage("Google Consent Error")
     element.click()
-    
-    return browser
+
+    return browser, recaptchaSolver
 
 
 def AskChatGPTResult(prompt:str):
@@ -940,7 +975,8 @@ def AskChatGPTResult(prompt:str):
     PrintVerbose("Used Input Token : " + str(chat["usage"]["prompt_tokens"]) +\
                    "\nUsed Output Token : " +str(chat["usage"]["completion_tokens"]) +\
                   "\nTotal Token Used : " +str(chat["usage"]["total_tokens"]) + \
-                    "\nTotal Cost : $" + str(chat["usage"]["prompt_tokens"] * 0.0000015 + chat["usage"]["completion_tokens"] * 0.0000025))
+                    "\nTotal Cost : $" + str(chat["usage"]["prompt_tokens"] * 0.0000015 + \
+                                             chat["usage"]["completion_tokens"] * 0.000002))
 
     #Verify the finish reason
     if chat["choices"][0]["finish_reason"] == "incomplete":
@@ -956,11 +992,11 @@ def AskChatGPTResult(prompt:str):
     return reply
 
 
-def GetPriceFromSimpleSearch(browser, search):
+def GetPriceFromSimpleSearch(browser, recaptchaSolver, search):
     """
     DOCUMENTATION
-        Function: GetPriceFromSimpleSearch
-        Description: Get the price of the product from a simple google search
+        Function : GetPriceFromSimpleSearch
+        Description : Get the price of the product from a simple google search
         Input :
             browser - the browser to use
             search : The search
@@ -971,7 +1007,7 @@ def GetPriceFromSimpleSearch(browser, search):
     PrintVerbose("Getting Price from Google Search...")
     if not IsOnMainResultPage:
         search = "https://www.google.com/search?q=" + search 
-        GetUrl(search.replace(" ", "+"), browser)
+        GetUrl(search.replace(" ", "+"), browser, recaptchaSolver)
         IsOnMainResultPage = True
         time.sleep(lowestWaitingTime)
     
@@ -1007,7 +1043,7 @@ def GetPriceFromSimpleSearch(browser, search):
     return prices
 
 
-def GetPricesFromGoogleShopping(browser, search):
+def GetPricesFromGoogleShopping(browser, recaptchaSolver, search):
     """
     DOCUMENTATION
         Function : GetPricesFromGoogleShopping
@@ -1023,7 +1059,7 @@ def GetPricesFromGoogleShopping(browser, search):
 
     if not IsOnMainResultPage:
         search = "https://www.google.com/search?q=" + search
-        GetUrl(search.replace(" ", "+"), browser)
+        GetUrl(search.replace(" ", "+"), browser, recaptchaSolver)
         IsOnMainResultPage = True
         time.sleep(lowestWaitingTime)
 
@@ -1059,7 +1095,7 @@ def GetPricesFromGoogleShopping(browser, search):
             except:
                 PrintWarningMessage("Getting Shopping Product Link Error")
                 return []
-        GetUrl(link, browser)
+        GetUrl(link, browser, recaptchaSolver)
         time.sleep(lowestWaitingTime)
         try:
             prices = browser.find_elements(By.CLASS_NAME, "g9WBQb")
@@ -1109,8 +1145,8 @@ def GetRecommendedPrice(price):
 #===================================================================================================
 
 
-def GetPrice(browser):
-    """"
+def GetPrice(browser, recaptchaSolver):
+    """
     DOCUMENTATION
         Function : GetPrice
         Description : Get the price of the product
@@ -1129,10 +1165,10 @@ def GetPrice(browser):
         search = IntegrateElementsInText(f.read())
 
     if GSP:
-        prices = GetPricesFromGoogleShopping(browser, search)
+        prices = GetPricesFromGoogleShopping(browser, recaptchaSolver, search)
     else:
-        prices = GetPriceFromSimpleSearch(browser, search)
-        prices += GetPricesFromGoogleShopping(browser, search)
+        prices = GetPriceFromSimpleSearch(browser, recaptchaSolver, search)
+        prices += GetPricesFromGoogleShopping(browser, recaptchaSolver, search)
 
     if prices == []:
         ErrorMessage("No Price Found")
@@ -1171,7 +1207,7 @@ def GetPrice(browser):
                 .format(finalPrice=finalPrice, lowestPrice=lowestPrice, highestPrice = highestPrice, VendorAndPrice=stringPrices, average=average), "w", encoding="utf-8")
 
 
-def GenerateAndSavePictures(browser, cleanName):
+def GenerateAndSavePictures(browser, recaptchaSolver, cleanName):
     """
     DOCUMENTATION
         Function : GenerateAndSavePictures
@@ -1207,7 +1243,7 @@ def GenerateAndSavePictures(browser, cleanName):
 
     if not IsOnMainResultPage:
         search = "https://www.google.com/search?q=" + sentenceSearch
-        GetUrl(search.replace(" ", "+"), browser)
+        GetUrl(search.replace(" ", "+"), browser, recaptchaSolver)
         IsOnMainResultPage = True
         time.sleep(lowestWaitingTime)
 
@@ -1245,7 +1281,7 @@ def GenerateAndSavePictures(browser, cleanName):
                 PrintWarningMessage("Getting Shopping Product Link Error")
                 do = False
         if do :
-            GetUrl(link, browser)
+            GetUrl(link, browser, recaptchaSolver)
             classImgOnGoogleShopping = "Xkiaqc"
             time.sleep(lowestWaitingTimeForPictures)
             try:
@@ -1304,7 +1340,7 @@ def GenerateAndSavePictures(browser, cleanName):
     search_url = f"https://www.google.com/search?site=&tbm=isch&source=hp&biw=1873&bih=990&q={sentenceSearch}"
 
     # begin search
-    GetUrl(search_url, browser)
+    GetUrl(search_url, browser, recaptchaSolver)
     time.sleep(lowestWaitingTime)
     #if not loaded, then try again
     try:
@@ -1383,7 +1419,7 @@ def GenerateAndSavePictures(browser, cleanName):
 
 
 
-def GenerateAndSaveText(browser):
+def GenerateAndSaveText(browser, recaptchaSolver):
     """
     DOCUMENTATION
         Function : GenerateAndSaveText
@@ -1394,7 +1430,7 @@ def GenerateAndSaveText(browser):
             None
     """
     PrintVerbose("Generating Text...")
-    prompt = GetPrompt(browser)
+    prompt = GetPrompt(browser, recaptchaSolver)
 
 
     if prompt.strip() == "":
@@ -1462,7 +1498,6 @@ def Main():
 
         script_Path = os.getcwd() + "/Automatic_Product_Completion.py"
         args = ["-v", "-i", productID, "-n", productName, "-b", productBrand, "-e", productEAN13, "-m"]
-        print("productID : " + productID, "productName : " + productName, "productBrand : " + productBrand, "productEAN13 : " + productEAN13, sep="\n")
         processes = []
         if toolMode[0] == "1":
             processes.append(subprocess.Popen(["python", script_Path] + args + ["100"]))
@@ -1478,22 +1513,22 @@ def Main():
         print("Main Program Finished with {} warning".format(warningNumber))
     else:
         PrintVerbose("Browser Initialized")
-        browser = InitGoogle()
+        browser, recaptchaSolver = InitGoogle()
 
         cleanName = CleanName(productName)
 
         if toolMode[0] == "1":
-            GenerateAndSaveText(browser)
+            GenerateAndSaveText(browser, recaptchaSolver)
             browser.quit()
-            print("Program DESCRIPTIONS Finished with {} warning".format(warningNumber))
+            PrintVerbose("Program DESCRIPTIONS Finished with {} warning".format(warningNumber))
         elif toolMode[1] == "1":
-            GenerateAndSavePictures(browser, cleanName)
+            GenerateAndSavePictures(browser, recaptchaSolver, cleanName)
             browser.quit()
-            print("Program PICTURES Finished with {} warning".format(warningNumber))
+            PrintVerbose("Program PICTURES Finished with {} warning".format(warningNumber))
         elif toolMode[2] == "1":
-            GetPrice(browser)
+            GetPrice(browser, recaptchaSolver)
             browser.quit()
-            print("Program PRICES Finished with {} warning".format(warningNumber))
+            PrintVerbose("Program PRICES Finished with {} warning".format(warningNumber))
     
         
     

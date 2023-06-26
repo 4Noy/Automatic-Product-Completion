@@ -1,6 +1,0 @@
-Recomanded Price : 14.9
-
-Average Price : 14.566666666666668
-Lowest Price : 6.9
-Highest Price : 29.9
-

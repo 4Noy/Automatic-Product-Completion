@@ -1,7 +1,0 @@
-Recomanded Price : 59.5
-
-Average Price : 59.45666666666667
-Lowest Price : 55.0
-Highest Price : 68.37
-
-1 - Trousselier : 55.0

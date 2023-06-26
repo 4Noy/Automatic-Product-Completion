@@ -1,0 +1,14 @@
+Recomanded Price : 25.5
+
+Average Price : 25.408461538461538
+Lowest Price : 22.99
+Highest Price : 27.0
+
+1 - Avenue des Jeux : 22.99
+2 - Achatnature : 23.9
+3 - Greenweez : 24.86
+4 - Bonhomme de Bois : 25.9
+5 - Jeujouet.com : 25.9
+6 - 1001hobbies.fr : 25.99
+7 - King Jouet : 26.99
+8 - Smallable : 27.0

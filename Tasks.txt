@@ -1,0 +1,13 @@
+Tasks :
+
+Pouvoir regen le prompt et le modifier
+
+À partir de l'EAN, trouver le nom du produit, la marque et l'afficher pour que l'utilisateur puisse voir si le nom du produit est correct et complete la brand, exemple avec google shopping
+
+Si jamais il n'y a pas assez d'images, aller chercher les images avec le nom et la brand
+
+Faire liste des sites reference pour que leur prix ai plus de valeur que les autres
+
+Aller chercher les images sur des sites prioritaires genre poule à pois etc...
+
+Faire en sorte que l'on puisse mettre plusieurs produits

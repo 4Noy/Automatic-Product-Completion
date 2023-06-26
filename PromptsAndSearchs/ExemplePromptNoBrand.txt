@@ -205,7 +205,18 @@ My product categories:
   Idée cadeau
   Pour les vacances
 
-Your response should be structured into three parts:
-Part 1: A brief, attention-grabbing statement in 20 words or less.
-Part 2: A description of the product in 60 words or less, including any relevant details such as age range, contents, game time, number of players, composition, product material, and size. Please note that you should only include this information if it is available to you.
-Part 3: A list of 3-5 categories that the product falls under, taking care to ensure that the categories are appropriate for the product's age range.
+Please provide a structured response for a product that consists of four parts:
+Part 1: A short, catchy statement (20 words or less) that will grab the reader's attention.
+Part 2: A brief product description (60 words or less), outlining relevant details such as age range, contents, game time, number of players, composition, product material, and size.
+Part 3: A list of 3-5 appropriate categories for the product based on its age range.
+Categories must be structured like this:
+- Category 1
+- Category 2
+...
+Part 4: Product features, including age range, contents, game time, number of players, composition, product material, and dimensions.
+The features must be structured in this format:
+- Feature 1
+- Feature 2
+...
+
+Please provide as much information as possible, but only include details that are available.
