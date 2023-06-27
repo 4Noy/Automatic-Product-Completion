@@ -624,11 +624,13 @@ def GetUrl(url, browser, recaptchaSolver):
         PrintVerbose("Google Captcha, trying to solve it...")
         i = 0
         while "/sorry/" in browser.current_url and i < 10:
-            try:
-                recaptchaSolver.click_recaptcha_v2(iframe=browser.find_element(By.XPATH, '//iframe[@title="reCAPTCHA"]'))
-            except:
-                PrintWarningMessage("Error while solving the captcha, trying again...")
+            #try:
+            browser.find_element(By.XPATH, '//iframe[@title="reCAPTCHA"]').click()
             time.sleep(0.5)
+            browser.find_element(By.XPATH, '//iframe[@title="Solve the challenge"]').click()
+            """ except:
+                PrintWarningMessage("Error while solving the captcha, trying again...")"""
+            time.sleep(5000)
             i += 1
         if i == 10:
             ErrorMessage("Error while solving the captcha, stopping the program")
@@ -902,7 +904,8 @@ def InitGoogle():
     #options.add_argument("--headless")
     options.add_argument(f'--user-agent={ua}')
     options.add_argument('--no-sandbox')
-    options.add_argument("--disable-extensions")
+    #options.add_argument("--disable-extensions")
+    options.add_extension("captchaSolver.crx")
 
     service = Service(seleniumSearchEngineDriverPath)
     browser = webdriver.Chrome(service=service, options=options)
@@ -956,7 +959,7 @@ def AskChatGPTResult(prompt:str):
     if not is_chat_model(openAIModel) :
         ErrorMessage("Model \"{}\" is not a valid chat model".format(openAIModel))
 
-    PrintVerbose("Trying to get acces to Chat GPT...")
+    PrintVerbose("Trying to get access to Chat GPT...")
     promptToSend = [{"role" : "user", "content": prompt}]
     while not lock.acquire(blocking=False):
         time.sleep(0.2)
@@ -1360,7 +1363,7 @@ def GenerateAndSavePictures(browser, recaptchaSolver, cleanName):
         # wait for the image to popup
         time.sleep(lowestWaitingTimeForPictures)
         try:
-            element = browser.find_element(By.XPATH, "/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div[2]/div/div[2]/div[2]/div[2]/c-wiz/div/div/div/div[3]/div[1]/a/img[1]")
+            element = browser.find_element(By.XPATH, "/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/c-wiz/div/div/div/div[3]/div[1]/a/img[1]")
             if element.get_attribute("src").startswith("data:image/"):
                 time.sleep(lowestWaitingTimeForPictures)
                 raise Exception("Incorrect Img")

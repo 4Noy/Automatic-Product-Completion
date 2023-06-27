@@ -1,6 +1,10 @@
 Tasks :
 
+faire les marques : Poppik, Brio(même pas de stocks), ravensburger(même pas de stocks), Ugears, 4M, Scratch, Sentosphere(même pas de stocks), Auzou, GreatPretenders
+
 Pouvoir regen le prompt et le modifier
+
+Translate in france
 
 À partir de l'EAN, trouver le nom du produit, la marque et l'afficher pour que l'utilisateur puisse voir si le nom du produit est correct et complete la brand, exemple avec google shopping
 

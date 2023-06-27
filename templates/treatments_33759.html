@@ -1,0 +1,59 @@
+
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+    function reloadPageWithParameter(id) {
+  var text = document.getElementById(id).textContent;
+  var params = new URLSearchParams(window.location.search);
+
+  params.delete('regen');
+  params.delete('idRegen');
+
+  params.set('regen', encodeURIComponent(text));
+  params.set('idRegen', encodeURIComponent(id));
+
+  var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+
+  history.replaceState({ path: newUrl }, '', newUrl);
+
+  window.location.reload();
+}
+function copyText(id) {
+        var textToCopy = document.getElementById(id);
+        var range = document.createRange();
+        range.selectNode(textToCopy);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+          // Copy text format
+          var successful = document.execCommand("copy");
+        } catch(err) {
+          console.log("Error copy :", err);
+        }
+        window.getSelection().removeAllRanges();
+      }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
+</script>
+  </head>
+  <body>
+    <h1>Automatic Product Completion - Product ID : 33759</h1>  <button onclick="goBack()">Back</button>
+    <h2 id="texte-a-copier">Descriptions</h2><button onclick="reloadPageWithParameter('1')">Rephrase</button><button onclick="copyText('1')">Copy</button><p id = '1' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Rejoignez le monde en 3D avec Ravensburger Puzzle Globe Illuminé en 180pcs!</p><br><button onclick="reloadPageWithParameter('2')">Rephrase</button><button onclick="copyText('2')">Copy</button><p id = '2' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Les enfants de 10 ans et plus adoreront le Ravensburger Puzzle Globe Illuminé en 180 pièces, idéal pour découvrir des endroits du monde entier tout en s'amusant. Ce puzzle 3D offre une touche supplémentaire avec son illumination LED qui éclaire les pays et les océans, créant une ambiance captivante. Les dimensions du puzzle une fois terminé sont de 20 x 20 x 30 cm.</p><br><button onclick="reloadPageWithParameter('3')">Rephrase</button><button onclick="copyText('3')">Copy</button><p id = '3' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Eveil et Décoration<br>- Jeux de Construction<br>- Puzzles 3D<br>- Découvrir le Monde<br>- Jouer pour Grandir</p><br><button onclick="reloadPageWithParameter('4')">Rephrase</button><button onclick="copyText('4')">Copy</button><p id = '4' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Age : 10 ans et plus<br>- Contenu : 180 pièces de puzzle et un socle avec éclairage à LED<br>- Temps de jeu : Variable<br>- Nombre de joueurs : 1 ou plus<br>- Matériau du produit : Plastique non toxique de haute qualité<br>- Dimensions : 20 x 20 x 30 cm<br><br>Le Ravensburger Puzzle Globe Illuminé en 180 pièces est un excellent moyen d'initier les enfants à la géographie et à la découverte du monde tout en s'amusant. Les 180 pièces du puzzle, fabriquées en plastique de haute qualité et non toxique, s'emboîtent facilement pour créer un globe 3D fascinant de 20 x 20 x 30 cm qui montrera les contours des frontières ainsi que les océans. Le puzzle est accompagné d'un socle avec éclairage à LED, créant une ambiance captivante qui met en lumière les pays et les océans. Les enfants peuvent passer des heures à explorer le monde, tout en renforçant leur pensée spatiale et leur coordination œil-main. Parfait pour les enfants de 10 ans et plus, ce puzzle est un choix parfait pour les parents qui cherchent à offrir à leurs enfants un voyage autour du monde en 3D.</p><br><center><h2>Images</h2><div class="image-container"><img src="{{ url_for('product_images', filename='33759/img/image-1_RAVENSBURGER_PUZZLE_3D_GLOBE_ILLUMINE_180PCS.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='33759/img/image-2_RAVENSBURGER_PUZZLE_3D_GLOBE_ILLUMINE_180PCS.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='33759/img/image-3_RAVENSBURGER_PUZZLE_3D_GLOBE_ILLUMINE_180PCS.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='33759/img/image-4_RAVENSBURGER_PUZZLE_3D_GLOBE_ILLUMINE_180PCS.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='33759/img/image-5_RAVENSBURGER_PUZZLE_3D_GLOBE_ILLUMINE_180PCS.jpg')}}"  width="auto" height="auto"></div></center><h2>Price</h2></center>  </body> </html>

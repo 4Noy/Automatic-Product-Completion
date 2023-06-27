@@ -91,19 +91,15 @@ def treatments(id_product):
         while not lock.acquire(blocking=False):
             time.sleep(0.2)
         print("Ask to Chat GPT...")
-        print("Prompt : ", prompt)
         chat = openai.ChatCompletion.create(model=jsonFile["default_model"], n=1, temperature=0.9, messages=[{"role" : "user", "content": prompt}])
         lock.release()
         with open("Products/" + str(id_product) + "/text_" + str(idRegen) +".txt", "w", encoding="utf-8") as f:
             f.write(chat['choices'][0]['message']['content'])
-        print(open("Products/" + str(id_product) + "/text_" + str(idRegen) +".txt", "r", encoding="utf-8").read())
-        print("Content : ",chat['choices'][0]['message']['content'])
         print("Used Input Token : " + str(chat["usage"]["prompt_tokens"]) +\
                    "\nUsed Output Token : " +str(chat["usage"]["completion_tokens"]) +\
                   "\nTotal Token Used : " +str(chat["usage"]["total_tokens"]) + \
                     "\nTotal Cost : $" + str(chat["usage"]["prompt_tokens"] * 0.0000015 + \
                                              chat["usage"]["completion_tokens"] * 0.000002))
-        print("Done !")
 
 
     page = """

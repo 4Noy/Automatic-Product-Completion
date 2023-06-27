@@ -1,0 +1,59 @@
+
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+    function reloadPageWithParameter(id) {
+  var text = document.getElementById(id).textContent;
+  var params = new URLSearchParams(window.location.search);
+
+  params.delete('regen');
+  params.delete('idRegen');
+
+  params.set('regen', encodeURIComponent(text));
+  params.set('idRegen', encodeURIComponent(id));
+
+  var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+
+  history.replaceState({ path: newUrl }, '', newUrl);
+
+  window.location.reload();
+}
+function copyText(id) {
+        var textToCopy = document.getElementById(id);
+        var range = document.createRange();
+        range.selectNode(textToCopy);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+          // Copy text format
+          var successful = document.execCommand("copy");
+        } catch(err) {
+          console.log("Error copy :", err);
+        }
+        window.getSelection().removeAllRanges();
+      }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
+</script>
+  </head>
+  <body>
+    <h1>Automatic Product Completion - Product ID : 44376</h1>  <button onclick="goBack()">Back</button>
+    <h2 id="texte-a-copier">Descriptions</h2><button onclick="reloadPageWithParameter('1')">Rephrase</button><button onclick="copyText('1')">Copy</button><p id = '1' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Découvrez le plaisir de la peinture sur numéro avec le NUMERO D'ART PETIT HP HERMIONE - RAVENSBURGER !</p><br><button onclick="reloadPageWithParameter('2')">Rephrase</button><button onclick="copyText('2')">Copy</button><p id = '2' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Le NUMERO D'ART PETIT HP HERMIONE de la marque Ravensburger est un kit de peinture par numéro qui contient une toile, des pinceaux, des peintures acryliques et un cadre. Il convient aux enfants à partir de 7 ans et aux adultes, et le temps de jeu est d'environ 3 à 4 heures. Ce produit est fabriqué à partir de matériaux de haute qualité et présente une taille de 18 x 24 cm.</p><br><button onclick="reloadPageWithParameter('3')">Rephrase</button><button onclick="copyText('3')">Copy</button><p id = '3' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Activités créatives et manuelles<br>- Jeux éducatifs et ludiques<br>- Coffrets cadeaux créatifs<br>- Loisirs créatifs</p><br><button onclick="reloadPageWithParameter('4')">Rephrase</button><button onclick="copyText('4')">Copy</button><p id = '4' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Convient aux enfants à partir de 7 ans et aux adultes<br>- Contient une toile, des pinceaux, des peintures acryliques et un cadre<br>- Temps de jeu d'environ 3 à 4 heures<br>- Fabriqué à partir de matériaux de haute qualité<br>- Dimensions : 18 x 24 cm.</p><br><center><h2>Images</h2><div class="image-container"><img src="{{ url_for('product_images', filename='44376/img/image-1_NUMERO_D__ART_PETIT_HP_HERMIONE__RAVENSBURGER.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44376/img/image-2_NUMERO_D__ART_PETIT_HP_HERMIONE__RAVENSBURGER.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44376/img/image-3_NUMERO_D__ART_PETIT_HP_HERMIONE__RAVENSBURGER.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44376/img/image-4_NUMERO_D__ART_PETIT_HP_HERMIONE__RAVENSBURGER.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44376/img/image-5_NUMERO_D__ART_PETIT_HP_HERMIONE__RAVENSBURGER.jpg')}}"  width="auto" height="auto"></div></center><h2>Price</h2></center>  </body> </html>

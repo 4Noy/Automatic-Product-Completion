@@ -1,0 +1,59 @@
+
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+    function reloadPageWithParameter(id) {
+  var text = document.getElementById(id).textContent;
+  var params = new URLSearchParams(window.location.search);
+
+  params.delete('regen');
+  params.delete('idRegen');
+
+  params.set('regen', encodeURIComponent(text));
+  params.set('idRegen', encodeURIComponent(id));
+
+  var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+
+  history.replaceState({ path: newUrl }, '', newUrl);
+
+  window.location.reload();
+}
+function copyText(id) {
+        var textToCopy = document.getElementById(id);
+        var range = document.createRange();
+        range.selectNode(textToCopy);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+          // Copy text format
+          var successful = document.execCommand("copy");
+        } catch(err) {
+          console.log("Error copy :", err);
+        }
+        window.getSelection().removeAllRanges();
+      }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
+</script>
+  </head>
+  <body>
+    <h1>Automatic Product Completion - Product ID : 44362</h1>  <button onclick="goBack()">Back</button>
+    <h2 id="texte-a-copier">Descriptions</h2><button onclick="reloadPageWithParameter('1')">Rephrase</button><button onclick="copyText('1')">Copy</button><p id = '1' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Offrez à votre enfant le voyage de sa vie avec le wagon girafe BRIO !</p><br><button onclick="reloadPageWithParameter('2')">Rephrase</button><button onclick="copyText('2')">Copy</button><p id = '2' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Le wagon girafe BRIO est un jouet en bois à utiliser avec les circuits de train BRIO. Il est adapté aux enfants âgés de 18 mois et plus, et peut être incliné pour que la girafe puisse bouger sa tête. Le wagon mesure 8 cm de large, 14 cm de haut et 16 cm de long.</p><br><button onclick="reloadPageWithParameter('3')">Rephrase</button><button onclick="copyText('3')">Copy</button><p id = '3' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Coffrets de bain<br>- Découvrir le monde<br>- Jouets premier âge<br>- A personnaliser<br>- Eveil et décoration</p><br><button onclick="reloadPageWithParameter('4')">Rephrase</button><button onclick="copyText('4')">Copy</button><p id = '4' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Pour les enfants de 18 mois et plus<br>- Comprend un wagon en bois et une girafe en bois qui peut incliner la tête<br>- À utiliser avec les circuits de train BRIO<br>- Dimensions du wagon: 8 cm de large, 14 cm de haut et 16 cm de long<br>- Matériaux de haute qualité pour une durabilité maximale</p><br><center><h2>Images</h2><div class="image-container"><img src="{{ url_for('product_images', filename='44362/img/image-1_BRIO_WAGON_GIRAFE.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44362/img/image-2_BRIO_WAGON_GIRAFE.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44362/img/image-3_BRIO_WAGON_GIRAFE.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44362/img/image-4_BRIO_WAGON_GIRAFE.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44362/img/image-5_BRIO_WAGON_GIRAFE.jpg')}}"  width="auto" height="auto"></div></center><h2>Price</h2></center>  </body> </html>

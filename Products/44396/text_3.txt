@@ -1,0 +1,5 @@
+Une liste de 3 à 5 catégories appropriées pour le produit en fonction de sa tranche d'âge.
+
+- Puzzles adultes
+- Puzzles avec des paysages
+- Puzzles de 2000 à 5000 pièces

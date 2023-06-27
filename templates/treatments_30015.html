@@ -1,0 +1,59 @@
+
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+    function reloadPageWithParameter(id) {
+  var text = document.getElementById(id).textContent;
+  var params = new URLSearchParams(window.location.search);
+
+  params.delete('regen');
+  params.delete('idRegen');
+
+  params.set('regen', encodeURIComponent(text));
+  params.set('idRegen', encodeURIComponent(id));
+
+  var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+
+  history.replaceState({ path: newUrl }, '', newUrl);
+
+  window.location.reload();
+}
+function copyText(id) {
+        var textToCopy = document.getElementById(id);
+        var range = document.createRange();
+        range.selectNode(textToCopy);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+          // Copy text format
+          var successful = document.execCommand("copy");
+        } catch(err) {
+          console.log("Error copy :", err);
+        }
+        window.getSelection().removeAllRanges();
+      }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
+</script>
+  </head>
+  <body>
+    <h1>Automatic Product Completion - Product ID : 30015</h1>  <button onclick="goBack()">Back</button>
+    <h2 id="texte-a-copier">Descriptions</h2><button onclick="reloadPageWithParameter('1')">Rephrase</button><button onclick="copyText('1')">Copy</button><p id = '1' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Découvrez le fantastique Robot Tirelire KidzRobotix de 4M !</p><br><button onclick="reloadPageWithParameter('2')">Rephrase</button><button onclick="copyText('2')">Copy</button><p id = '2' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">KidzRobotix - Robot Tirelire 14cm de la marque 4M est un excellent robot tirelire automatique qui permet aux enfants de déposer leur argent de poche dans leur propre banque. Ce robot mesure 14 cm et fonctionne grâce à un moteur, des fils, 10 vis, des capuchons de bornes et des engrenages. Il contient également un jeu de pièces de banque en plastique et des instructions détaillées. Un petit tournevis cruciforme et 1 pile AA sont requis mais non inclus dans le kit.</p><br><button onclick="reloadPageWithParameter('3')">Rephrase</button><button onclick="copyText('3')">Copy</button><p id = '3' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Eveil et décoration<br>- Jouets premier âge<br>- Jouets à empiler, à encastrer, à enfiler<br>- Jouets d'éveil à la science<br>- Jouets scientifiques</p><br><button onclick="reloadPageWithParameter('4')">Rephrase</button><button onclick="copyText('4')">Copy</button><p id = '4' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Dimensions : 14 cm<br>- Age recommandé : à partir de 8 ans<br>- Nombre de joueurs : 1<br>- Composition : moteur, fils, vis, capuchons de bornes et engrenages<br>- Matériaux : plastique<br>- Contenu : jeu de pièces de banque en plastique et instructions détaillées<br>- Fonctionne avec : un petit tournevis cruciforme et 1 pile AA (non incluses dans le kit)</p><br><center><h2>Images</h2><div class="image-container"><img src="{{ url_for('product_images', filename='30015/img/image-1_.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='30015/img/image-2_.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='30015/img/image-3_.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='30015/img/image-4_.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='30015/img/image-5_.jpg')}}"  width="auto" height="auto"></div></center><h2>Price</h2></center>  </body> </html>

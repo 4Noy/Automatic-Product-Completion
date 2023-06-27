@@ -1,0 +1,59 @@
+
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+    function reloadPageWithParameter(id) {
+  var text = document.getElementById(id).textContent;
+  var params = new URLSearchParams(window.location.search);
+
+  params.delete('regen');
+  params.delete('idRegen');
+
+  params.set('regen', encodeURIComponent(text));
+  params.set('idRegen', encodeURIComponent(id));
+
+  var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+
+  history.replaceState({ path: newUrl }, '', newUrl);
+
+  window.location.reload();
+}
+function copyText(id) {
+        var textToCopy = document.getElementById(id);
+        var range = document.createRange();
+        range.selectNode(textToCopy);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+          // Copy text format
+          var successful = document.execCommand("copy");
+        } catch(err) {
+          console.log("Error copy :", err);
+        }
+        window.getSelection().removeAllRanges();
+      }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
+</script>
+  </head>
+  <body>
+    <h1>Automatic Product Completion - Product ID : 44382</h1>  <button onclick="goBack()">Back</button>
+    <h2 id="texte-a-copier">Descriptions</h2><button onclick="reloadPageWithParameter('1')">Rephrase</button><button onclick="copyText('1')">Copy</button><p id = '1' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Un puzzle enchanté pour les petites princesses en herbe !</p><br><button onclick="reloadPageWithParameter('2')">Rephrase</button><button onclick="copyText('2')">Copy</button><p id = '2' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Le puzzle Disney Princesses 3X49P de Ravensburger est un jeu de patience et de réflexion, conçu pour les enfants âgés de plus de 5 ans. Les petites princesses pourront assembler pas moins de 3 puzzles de 49 pièces à l'effigie de leurs héroïnes préférées de Disney. Ce jeu est idéal pour aider vos enfants à développer leur concentration, leur patience et leurs compétences en résolution de problèmes.</p><br><button onclick="reloadPageWithParameter('3')">Rephrase</button><button onclick="copyText('3')">Copy</button><p id = '3' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Jeux d'éveil<br>- Puzzles<br>- Jouets Disney<br>- Jouets de patience</p><br><button onclick="reloadPageWithParameter('4')">Rephrase</button><button onclick="copyText('4')">Copy</button><p id = '4' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Convient aux enfants de 5 ans et plus<br>- Comprend 3 puzzles de 49 pièces chacun à l'effigie des princesses Disney<br>- Temps de jeu : variable en fonction de l'âge et de la patience de l'enfant<br>- Nombre de joueurs : 1 ou plus<br>- Composition : carton épais et de qualité supérieure pour une longue durée de vie<br>- Dimensions : chacun des puzzles mesure 18 x 18 cm, pour un total de 58 x 18 cm une fois tous les puzzles assemblés.</p><br><center><h2>Images</h2><div class="image-container"><img src="{{ url_for('product_images', filename='44382/img/image-1_RAVENSBURGER___PUZZLE_DISNEY_PRINCESSES_3X49P.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44382/img/image-2_RAVENSBURGER___PUZZLE_DISNEY_PRINCESSES_3X49P.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44382/img/image-3_RAVENSBURGER___PUZZLE_DISNEY_PRINCESSES_3X49P.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44382/img/image-4_RAVENSBURGER___PUZZLE_DISNEY_PRINCESSES_3X49P.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='44382/img/image-5_RAVENSBURGER___PUZZLE_DISNEY_PRINCESSES_3X49P.jpg')}}"  width="auto" height="auto"></div></center><h2>Price</h2></center>  </body> </html>
