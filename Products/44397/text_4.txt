@@ -1,5 +1,0 @@
-- Convient aux enfants à partir de 8 ans
-- Contient des blocs, des plateformes et des rails pour construire des circuits de billes
-- Peut être joué seul ou en compétition avec des amis
-- La durée de jeu varie en fonction de la complexité du circuit
-- Les dimensions du produit sont de 33 x 33 x 8 cm.

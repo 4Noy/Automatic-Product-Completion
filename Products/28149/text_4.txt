@@ -1,5 +1,0 @@
-- Age range: tous les âges
-- Nombre de joueurs: jeu solo ou en groupe
-- Temps de jeu: variable
-- Matériau du produit: carton de haute qualité 
-- Dimensions: 49 x 36 cm une fois terminé.

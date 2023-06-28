@@ -1,3 +1,0 @@
-- Jeux de construction
-- Jouets à empiler, à encastrer, à enfiler
-- Jeux de société

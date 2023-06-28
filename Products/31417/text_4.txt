@@ -1,6 +1,0 @@
-- Age recommandé: à partir de 10 ans
-- Nombre de pièces: 108
-- Temps de jeu: N/A
-- Nombre de joueurs: 1 ou plus
-- Composition: carton et plastique
-- Dimensions: 12 x 26 x 38 cm

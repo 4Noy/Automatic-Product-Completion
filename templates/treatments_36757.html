@@ -1,0 +1,59 @@
+
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+    function reloadPageWithParameter(id) {
+  var text = document.getElementById(id).textContent;
+  var params = new URLSearchParams(window.location.search);
+
+  params.delete('regen');
+  params.delete('idRegen');
+
+  params.set('regen', encodeURIComponent(text));
+  params.set('idRegen', encodeURIComponent(id));
+
+  var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+
+  history.replaceState({ path: newUrl }, '', newUrl);
+
+  window.location.reload();
+}
+function copyText(id) {
+        var textToCopy = document.getElementById(id);
+        var range = document.createRange();
+        range.selectNode(textToCopy);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+          // Copy text format
+          var successful = document.execCommand("copy");
+        } catch(err) {
+          console.log("Error copy :", err);
+        }
+        window.getSelection().removeAllRanges();
+      }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
+</script>
+  </head>
+  <body>
+    <h1>Automatic Product Completion - Product ID : 36757</h1>  <button onclick="goBack()">Back</button>
+    <h2 id="texte-a-copier">Descriptions</h2><button onclick="reloadPageWithParameter('1')">Rephrase</button><button onclick="copyText('1')">Copy</button><p id = '1' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Faites place au Magicobus ! Une maquette en bois fascinante qui vous fera voyager dans l'univers d'Harry Potter.</p><br><button onclick="reloadPageWithParameter('2')">Rephrase</button><button onclick="copyText('2')">Copy</button><p id = '2' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Le Magicobus d'Ugears est un puzzle 3D en bois qui nécessite assemblage sans colle. Adapté aux enfants de 14 ans et plus, ce modèle mesure 19,6 x 6,5 x 15 cm. Avec ses 268 pièces, il offre une expérience de jeu captivante. Laissez-vous émerveiller par les ingénieux mécanismes qui permettent au bus de se mettre en mouvement grâce à un système d'engrenages.</p><br><button onclick="reloadPageWithParameter('3')">Rephrase</button><button onclick="copyText('3')">Copy</button><p id = '3' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Maquettes et puzzles 3D<br>- Jouets pour les fans d'Harry Potter<br>- Jouets d'assemblage et de construction<br>- Jouets pour les enfants de 14 ans et plus</p><br><button onclick="reloadPageWithParameter('4')">Rephrase</button><button onclick="copyText('4')">Copy</button><p id = '4' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Âge recommandé : 14 ans et plus<br>- Contenu : 268 pièces en bois<br>- Temps de jeu : Variable, dépend du temps consacré à l'assemblage<br>- Nombre de joueurs : 1<br>- Composition : Bois<br>- Dimensions : 19,6 x 6,5 x 15 cm<br><br>Note: The information provided is based on the available research, and the accuracy of the details may need to be verified through further investigation or by referring to the official product description from the brand.</p><br><center><h2>Images</h2><div class="image-container"><img src="{{ url_for('product_images', filename='36757/img/image-1_UGEARS___THE_KNIGHT_BUS___268_PIECES.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='36757/img/image-2_UGEARS___THE_KNIGHT_BUS___268_PIECES.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='36757/img/image-3_UGEARS___THE_KNIGHT_BUS___268_PIECES.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='36757/img/image-4_UGEARS___THE_KNIGHT_BUS___268_PIECES.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='36757/img/image-5_UGEARS___THE_KNIGHT_BUS___268_PIECES.jpg')}}"  width="auto" height="auto"></div></center><h2>Price</h2></center>  </body> </html>

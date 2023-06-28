@@ -1,10 +1,10 @@
 Tasks :
 
-faire les marques : Poppik, Brio(même pas de stocks), ravensburger(même pas de stocks), Ugears, 4M, Scratch, Sentosphere(même pas de stocks), Auzou, GreatPretenders
+Exemple produit où images marchent pas : 45703
 
-Pouvoir regen le prompt et le modifier
+Pouvoir modifier le prompt
 
-Translate in france
+Faire une version stable ou il redémare tout seul et tout
 
 À partir de l'EAN, trouver le nom du produit, la marque et l'afficher pour que l'utilisateur puisse voir si le nom du produit est correct et complete la brand, exemple avec google shopping
 
@@ -15,3 +15,6 @@ Faire liste des sites reference pour que leur prix ai plus de valeur que les aut
 Aller chercher les images sur des sites prioritaires genre poule à pois etc...
 
 Faire en sorte que l'on puisse mettre plusieurs produits
+
+
+tableau de bord des finances

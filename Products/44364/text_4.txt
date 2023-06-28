@@ -1,7 +1,0 @@
-- Age recommandé: à partir de 3 ans
-- Contenu: circuit de train, wagon zèbre, jeep
-- Temps de jeu: illimité
-- Nombre de joueurs: 1 ou plusieurs
-- Composition: bois issu de forêts gérées durablement
-- Matériau du produit: bois, métal et plastique
-- Dimensions: 45 x 68 x 11 cm

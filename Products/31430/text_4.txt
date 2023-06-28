@@ -1,6 +1,0 @@
-- Âge recommandé: à partir de 6 ans
-- Nombre de pièces: 99
-- Temps de jeu: variable
-- Nombre de joueurs: 1 ou plus
-- Matériau du produit: de haute qualité
-- Dimensions du produit: 36 x 26 cm

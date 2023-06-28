@@ -1,6 +1,0 @@
-- Convient aux joueurs de plus de 14 ans
-- Contient 1500 pièces en carton de haute qualité
-- Temps de jeu estimé : Entre 4 et 6 heures
-- Nombre de joueurs : 1 ou plus 
-- Dimensions : 80 x 60 cm une fois terminé
-- Marque de puzzle de confiance : Ravensburger.

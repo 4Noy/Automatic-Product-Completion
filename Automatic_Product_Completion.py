@@ -24,7 +24,8 @@ Python 3 - to install : go on the website https://www.python.org/
 openai python package - to install : pip install openai
 selenium python package - to install : pip install selenium
 unidecode python packa - to install : pip install Unidecode
-selenium-recaptcha-solver - to install : pip install selenium-recaptcha-solver
+bs4 python package - to install : pip install bs4
+PIL python package - to install : pip install pillow
 Chrome app - to install : go on the website https://www.google.com/chrome/
 Chromium web driver - to install : go on the website https://chromedriver.chromium.org/downloads
 
@@ -35,6 +36,14 @@ And an Internet connection :)
 # for the product Name and add : {Brand}
 # for the brand name and add : {EAN}
 # for the EAN13
+
+# You can modift these values if your internet connection is slow
+#===================================================================================================
+lowestWaitingTime = 0
+highestWaitingTime = 0.2
+lowestWaitingTimeForPictures = 0.2
+highestWaitingTimeForPictures = 1
+
 
 # 0 - Init
 #===================================================================================================
@@ -397,10 +406,7 @@ GSP = options.GSP
 
 warningNumber = 0
 
-lowestWaitingTime = 0
-highestWaitingTime = 0.2
-lowestWaitingTimeForPictures = 0.2
-highestWaitingTimeForPictures = 0.5
+
 
 IsOnMainResultPage = False
 
@@ -1371,7 +1377,7 @@ def GenerateAndSavePictures(browser, recaptchaSolver, cleanName):
             PrintVerbose("Getting Image Link N°{} Error, Trying Again...".format(str(count+1)))
             time.sleep(highestWaitingTimeForPictures)
             try:
-                element = browser.find_element(By.XPATH, "/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div[2]/div/div[2]/div[2]/div[2]/c-wiz/div/div/div/div[3]/div[1]/a/img[1]")
+                element = browser.find_element(By.XPATH, "/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/c-wiz/div/div/div/div[3]/div[1]/a/img[1]")
                 if element.get_attribute("src").startswith("data:image/"):
                     raise Exception("You must wait more between each image if you want to get more images")
             except Exception as e:
@@ -1500,7 +1506,7 @@ def Main():
         PrintVerbose("Current Path : " + originalPath)
 
         script_Path = os.getcwd() + "/Automatic_Product_Completion.py"
-        args = ["-v", "-i", productID, "-n", productName, "-b", productBrand, "-e", productEAN13, "-m"]
+        args = ["-v", "-i", str(productID), "-n", str(productName), "-b", str(productBrand), "-e", str(productEAN13), "-m"]
         processes = []
         if toolMode[0] == "1":
             processes.append(subprocess.Popen(["python", script_Path] + args + ["100"]))
@@ -1522,15 +1528,15 @@ def Main():
 
         if toolMode[0] == "1":
             GenerateAndSaveText(browser, recaptchaSolver)
-            browser.quit()
+            browser.close()
             PrintVerbose("Program DESCRIPTIONS Finished with {} warning".format(warningNumber))
         elif toolMode[1] == "1":
             GenerateAndSavePictures(browser, recaptchaSolver, cleanName)
-            browser.quit()
+            browser.close()
             PrintVerbose("Program PICTURES Finished with {} warning".format(warningNumber))
         elif toolMode[2] == "1":
             GetPrice(browser, recaptchaSolver)
-            browser.quit()
+            browser.close()
             PrintVerbose("Program PRICES Finished with {} warning".format(warningNumber))
     
         

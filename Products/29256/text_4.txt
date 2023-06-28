@@ -1,8 +1,0 @@
-- Convient aux enfants de 8 ans et plus 
-- Contient un Bloc Flex Tube pour les parcours Gravitrax 
-- Compatible avec tous les autres éléments de la gamme Gravitrax 
-- Temps de jeu : variable selon la complexité du parcours 
-- Nombre de joueurs : 1 ou plus 
-- Composition : plastique 
-- Matériaux du produit : robuste et durable 
-- Dimensions : 12,9 x 14,9 x 4 cm

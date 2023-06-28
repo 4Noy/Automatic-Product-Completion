@@ -1,9 +1,0 @@
-Les caractéristiques du produit, comprenant la tranche d'âge, le contenu, la durée de jeu, le nombre de joueurs, la composition, le matériau du produit et les dimensions.
-
-- Tranche d'âge : 14 ans et plus
-- Contenu : 3000 pièces de puzzle en carton épais et robuste
-- Durée de jeu : variable
-- Nombre de joueurs : 1+
-- Composition : Puzzle de paysage
-- Matériau du produit : carton épais et robuste
-- Dimensions : 121 x 80 cm une fois terminé

@@ -1,6 +1,0 @@
-- Convient aux enfants de 5 ans et plus
-- Comprend 3 puzzles de 49 pièces chacun à l'effigie des princesses Disney
-- Temps de jeu : variable en fonction de l'âge et de la patience de l'enfant
-- Nombre de joueurs : 1 ou plus
-- Composition : carton épais et de qualité supérieure pour une longue durée de vie
-- Dimensions : chacun des puzzles mesure 18 x 18 cm, pour un total de 58 x 18 cm une fois tous les puzzles assemblés.

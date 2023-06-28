@@ -1,6 +1,0 @@
-- Convient aux enfants de 8 ans et plus 
-- Contient 108 pièces en plastique plates ou à charnières uniques
-- Pas besoin de colle pour assembler le puzzle
-- Temps de jeu : variable en fonction de la dextérité de l'enfant
-- Nombre de joueurs : 1 ou plus
-- Dimensions : à déterminer.

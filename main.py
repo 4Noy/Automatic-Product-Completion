@@ -41,9 +41,9 @@ def treatments(id_product):
         regen = ""
         idRegen = ""
     try:
-        productName = request.args['n']
-        productBrand = request.args['b']
-        productEAN13 = request.args['e']
+        productName = str(request.args['n'])
+        productBrand = str(request.args['b'])
+        productEAN13 = str(request.args['e'])
         modes = request.args.getlist('m')
     except:
         return "Error, please check your inputs"
@@ -100,6 +100,7 @@ def treatments(id_product):
                   "\nTotal Token Used : " +str(chat["usage"]["total_tokens"]) + \
                     "\nTotal Cost : $" + str(chat["usage"]["prompt_tokens"] * 0.0000015 + \
                                              chat["usage"]["completion_tokens"] * 0.000002))
+        time.sleep(0.1)
 
 
     page = """
@@ -206,7 +207,7 @@ function copyText(id) {
     #write the page
     with open(f"templates/treatments_{id_product}.html", "w", encoding="utf-8") as f:
         f.write(page)
-
+    time.sleep(0.1)
     return render_template(f'treatments_{id_product}.html', encoding='utf-8', id_product=id_product)
 
 if __name__ == '__main__':
