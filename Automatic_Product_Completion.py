@@ -8,7 +8,6 @@ __credits__ = ["Mev"]
 
 
 import sys, openai, re, os, time, optparse, requests, json, threading, subprocess, unidecode
-from selenium_recaptcha_solver import RecaptchaSolver
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -24,8 +23,7 @@ Python 3 - to install : go on the website https://www.python.org/
 openai python package - to install : pip install openai
 selenium python package - to install : pip install selenium
 unidecode python packa - to install : pip install Unidecode
-bs4 python package - to install : pip install bs4
-PIL python package - to install : pip install pillow
+selenium-recaptcha-solver - to install : pip install selenium-recaptcha-solver
 Chrome app - to install : go on the website https://www.google.com/chrome/
 Chromium web driver - to install : go on the website https://chromedriver.chromium.org/downloads
 
@@ -917,7 +915,7 @@ def InitGoogle():
     browser = webdriver.Chrome(service=service, options=options)
     search_url = f"https://www.google.com/"
     
-    recaptchaSolver = RecaptchaSolver(driver=browser)
+    recaptchaSolver = None
 
     # open browser and begin search
     GetUrl(search_url, browser, recaptchaSolver)
