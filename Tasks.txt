@@ -2,6 +2,8 @@ Tasks :
 
 Faire une version stable ou il redémare tout seul et tout + opti le visuel pour moins de conso
 
+Recadrer les images sur la page web pour pouvoir toutes les voir
+
 Pouvoir modifier le prompt
 
 À partir de l'EAN, trouver le nom du produit, la marque et l'afficher pour que l'utilisateur puisse voir si le nom du produit est correct et complete la brand, exemple avec google shopping

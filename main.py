@@ -72,11 +72,13 @@ def treatments(id_product):
             script_Path = os.getcwd() + "/Automatic_Product_Completion.py"
 
             if productBrand == "Brand" or productBrand == "" or productBrand is None:
-                args = ["-v", "-i", id_product, "-n", productName, "-e", productEAN13, "-m", tm]
+                args = ["-v", "-i", str(id_product), "-n", str(productName), "-e", str(productEAN13), "-m", tm]
             else:
-                args = ["-v", "-i", id_product, "-n", productName, "-b", productBrand, "-e", productEAN13, "-m", tm]
+                args = ["-v", "-i", str(id_product), "-n", str(productName), "-b", str(productBrand), "-e", str(productEAN13), "-m", tm]
 
-            subprocess.call(["python", script_Path] + args)
+            r = subprocess.call(["python", script_Path] + args)
+            if r == 2:
+                return "Blocked by Google Captcha"
     else:
         print("Rephrasing...")
         nbRequestChatGPT += 1

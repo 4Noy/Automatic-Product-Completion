@@ -632,11 +632,9 @@ def GetUrl(url, browser, recaptchaSolver):
         while "/sorry/" in browser.current_url and i < 10:
             #try:
             browser.find_element(By.XPATH, '//iframe[@title="reCAPTCHA"]').click()
-            time.sleep(0.5)
-            browser.find_element(By.XPATH, '//iframe[@title="Solve the challenge"]').click()
             """ except:
                 PrintWarningMessage("Error while solving the captcha, trying again...")"""
-            time.sleep(5000)
+            exit(2)
             i += 1
         if i == 10:
             ErrorMessage("Error while solving the captcha, stopping the program")
@@ -912,6 +910,8 @@ def InitGoogle():
     options.add_argument('--no-sandbox')
     #options.add_argument("--disable-extensions")
     options.add_extension("captchaSolver.crx")
+    # desactivate affichage
+    options.add_argument("--disable-gpu")
 
     service = Service(seleniumSearchEngineDriverPath)
     browser = webdriver.Chrome(service=service, options=options)
@@ -1519,6 +1519,8 @@ def Main():
         
         for process in processes:
             process.wait()
+            if process.returncode == 2:
+                exit(2)
         print("Main Program Finished with {} warning".format(warningNumber))
     else:
         PrintVerbose("Browser Initialized")
