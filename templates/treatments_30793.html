@@ -1,0 +1,59 @@
+
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+    function reloadPageWithParameter(id) {
+  var text = document.getElementById(id).textContent;
+  var params = new URLSearchParams(window.location.search);
+
+  params.delete('regen');
+  params.delete('idRegen');
+
+  params.set('regen', encodeURIComponent(text));
+  params.set('idRegen', encodeURIComponent(id));
+
+  var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+
+  history.replaceState({ path: newUrl }, '', newUrl);
+
+  window.location.reload();
+}
+function copyText(id) {
+        var textToCopy = document.getElementById(id);
+        var range = document.createRange();
+        range.selectNode(textToCopy);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+          // Copy text format
+          var successful = document.execCommand("copy");
+        } catch(err) {
+          console.log("Error copy :", err);
+        }
+        window.getSelection().removeAllRanges();
+      }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
+</script>
+  </head>
+  <body>
+    <h1>Automatic Product Completion - Product ID : 30793</h1>  <button onclick="goBack()">Back</button>
+    <h2 id="texte-a-copier">Descriptions</h2><button onclick="reloadPageWithParameter('1')">Rephrase</button><button onclick="copyText('1')">Copy</button><p id = '1' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Un jouet en bois pour une aventure sauvage!</p><br><button onclick="reloadPageWithParameter('2')">Rephrase</button><button onclick="copyText('2')">Copy</button><p id = '2' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Ce jouet en bois de la marque None est parfait pour les enfants de tout âge. Il représente un éléphant de la savane et est conçu pour stimuler l'imagination et la créativité des enfants. Fabriqué en bois de haute qualité, il est sûr et durable. Il est idéal pour les jeux de rôle, les histoires et les activités d'apprentissage. Avec sa taille compacte, il peut être emporté partout.</p><br><button onclick="reloadPageWithParameter('3')">Rephrase</button><button onclick="copyText('3')">Copy</button><p id = '3' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Jouets premier âge<br>- Jouets d'éveil<br>- Animaux en bois</p><br><button onclick="reloadPageWithParameter('4')">Rephrase</button><button onclick="copyText('4')">Copy</button><p id = '4' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Âge recommandé: Tout âge<br>- Contenu: 1 jouet éléphant en bois de la savane<br>- Matériau: Bois de haute qualité<br>- Dimensions: Compacte et facile à transporter<br>- Nombre de joueurs: 1 ou plus<br>- Temps de jeu: Illimité<br>- Composition: Bois naturel non toxique</p><br><center><h2>Images</h2><div class="image-container"><img src="{{ url_for('product_images', filename='30793/img/image-1_WOODEN_TOYS___ANIMALI_DE_LA_SAVANA___ELEPHANT.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='30793/img/image-2_WOODEN_TOYS___ANIMALI_DE_LA_SAVANA___ELEPHANT.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='30793/img/image-3_WOODEN_TOYS___ANIMALI_DE_LA_SAVANA___ELEPHANT.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='30793/img/image-4_WOODEN_TOYS___ANIMALI_DE_LA_SAVANA___ELEPHANT.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='30793/img/image-5_WOODEN_TOYS___ANIMALI_DE_LA_SAVANA___ELEPHANT.jpg')}}"  width="auto" height="auto"></div></center><h2>Price</h2></center>  </body> </html>

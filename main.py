@@ -114,7 +114,7 @@ def treatments(id_product):
 <style>
 .image-container {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: center;
     overflow-x: auto;
 }

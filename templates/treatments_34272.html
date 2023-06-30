@@ -1,0 +1,59 @@
+
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product</title>
+<style>
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-x: auto;
+}
+.image-container img {
+    width: auto; /* Pour ajuster la largeur en fonction de la hauteur spécifiée */
+    height: 300px; /* Hauteur fixe de 800 pixels */
+    margin: 10px;
+}
+</style>
+    <script>
+    function reloadPageWithParameter(id) {
+  var text = document.getElementById(id).textContent;
+  var params = new URLSearchParams(window.location.search);
+
+  params.delete('regen');
+  params.delete('idRegen');
+
+  params.set('regen', encodeURIComponent(text));
+  params.set('idRegen', encodeURIComponent(id));
+
+  var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+
+  history.replaceState({ path: newUrl }, '', newUrl);
+
+  window.location.reload();
+}
+function copyText(id) {
+        var textToCopy = document.getElementById(id);
+        var range = document.createRange();
+        range.selectNode(textToCopy);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+          // Copy text format
+          var successful = document.execCommand("copy");
+        } catch(err) {
+          console.log("Error copy :", err);
+        }
+        window.getSelection().removeAllRanges();
+      }
+    function goBack() {
+          window.location.href = '/?activated=true';
+        }
+</script>
+  </head>
+  <body>
+    <h1>Automatic Product Completion - Product ID : 34272</h1>  <button onclick="goBack()">Back</button>
+    <h2 id="texte-a-copier">Descriptions</h2><button onclick="reloadPageWithParameter('1')">Rephrase</button><button onclick="copyText('1')">Copy</button><p id = '1' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Découvrez les eaux oubliées de Plaid Hat Games et embarquez dans une aventure palpitante qui vous transportera vers l'inconnu !</p><br><button onclick="reloadPageWithParameter('2')">Rephrase</button><button onclick="copyText('2')">Copy</button><p id = '2' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">Forgotten Waters est un jeu de société captivant qui vous plonge dans un univers pirate rempli de mystères. Convient aux joueurs âgés de 14 ans et plus, ce jeu offre une expérience immersive avec une durée de jeu d'environ 2 à 3 heures. Il peut être joué en solo ou en coopération avec jusqu'à 7 joueurs. Le jeu comprend des cartes, des dés, des jetons et un livret de règles pour une expérience de jeu complète. Les dimensions du jeu sont disponibles sur le site [1].</p><br><button onclick="reloadPageWithParameter('3')">Rephrase</button><button onclick="copyText('3')">Copy</button><p id = '3' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Jeux de société<br>- Jeux coopératifs<br>- Jeux d'aventure</p><br><button onclick="reloadPageWithParameter('4')">Rephrase</button><button onclick="copyText('4')">Copy</button><p id = '4' style="font-size:14pt;line-height:107%;font-family:Arial, sans-serif;">- Âge recommandé: 14 ans et plus<br>- Contenu: cartes, dés, jetons, livret de règles<br>- Durée de jeu: environ 2 à 3 heures<br>- Nombre de joueurs: 1 à 7 joueurs<br>- Composition: carton, plastique<br>- Dimensions: disponibles sur le site [1]<br><br>[1](https://www.philibertnet.com/fr/plaid-hat-games/94699-forgotten-waters-3558380085911.html)</p><br><center><h2>Images</h2><div class="image-container"><img src="{{ url_for('product_images', filename='34272/img/image-1_FORGOTTEN_WATERS.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='34272/img/image-2_FORGOTTEN_WATERS.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='34272/img/image-3_FORGOTTEN_WATERS.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='34272/img/image-4_FORGOTTEN_WATERS.jpg')}}"  width="auto" height="auto"><img src="{{ url_for('product_images', filename='34272/img/image-5_FORGOTTEN_WATERS.jpg')}}"  width="auto" height="auto"></div></center><h2>Price</h2></center>  </body> </html>

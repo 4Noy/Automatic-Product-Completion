@@ -1,0 +1,10 @@
+Caractéristiques du produit, notamment la tranche d'âge, le contenu, la durée du jeu, le nombre de joueurs, la composition, le matériau du produit et les dimensions.
+- Tranche d'âge : À partir de 8 ans
+- Contenu : Cartes de jeu avec des objets, des métiers et des animaux
+- Durée du jeu : Variable, en fonction du nombre de joueurs
+- Nombre de joueurs : 4 joueurs ou plus
+- Composition : Jeu de cartes et règles du jeu
+- Matériau du produit : Carton
+- Dimensions : Non spécifiées
+
+Veuillez noter que ces informations sont basées sur ma recherche générale et peuvent varier en fonction du produit réel.
