@@ -1,7 +1,0 @@
-- Age recommandé : à partir de 12 ans
-- Contenu : blocs de construction pour créer un bonsaï en pin
-- Temps de jeu : variable en fonction de la vitesse de construction
-- Nombre de joueurs : 1
-- Composition : blocs de plastique
-- Matériau du produit : plastique
-- Dimensions : disponibles sur le site du fabricant [[1](https://markstyletokyo.fr/nanoblock/4288-nanoblockr-bonsai-pine-4972825221723.html)]

@@ -903,7 +903,8 @@ def InitGoogle():
     """
     ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
     options = Options()
-    #options.add_argument("--headless")
+    options.add_argument("--headless")
+    options.add_argument('--disable-gpu')
     options.add_argument(f'--user-agent={ua}')
     options.add_argument('--no-sandbox')
     #options.add_argument("--disable-extensions")

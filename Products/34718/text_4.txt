@@ -1,7 +1,0 @@
-- Âge recommandé : [âge recommandé]
-- Composition : PVC sans phtalate
-- Dimensions : [dimensions du produit]
-- Nombre de joueurs : 1
-- Durée de jeu : variable selon l'imagination de l'enfant
-
-Merci d'avoir posé la question !

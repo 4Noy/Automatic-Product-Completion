@@ -1,3 +1,0 @@
-- Jeux de société
-- Jeux coopératifs
-- Jeux d'aventure

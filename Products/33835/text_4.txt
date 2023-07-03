@@ -1,7 +1,0 @@
-- Âge recommandé : dès 6 mois
-- Contenu : livre-encastrement
-- Durée du jeu : variable selon l'enfant
-- Nombre de joueurs : 1 ou plus
-- Composition : 8 pages en carton
-- Matériau du produit : carton
-- Dimensions : non spécifiées
