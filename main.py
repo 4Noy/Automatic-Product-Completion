@@ -11,7 +11,11 @@ Flask (pip install flask)
 """
 
 #set openai api key
-jsonFile = json.load(open("config.json", "r"))
+try:
+	jsonFile = json.load(open("config.json", "r"))
+except:
+	print("No Config File, start Automatic_Product_Completion.py before using website interface")
+	exit(0)
 openai.api_key= jsonFile["openai_api_key"]
 app = Flask(__name__)
 lock = threading.Lock()
