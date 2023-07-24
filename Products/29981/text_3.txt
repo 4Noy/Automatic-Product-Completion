@@ -1,6 +1,0 @@
-Une liste de 3 à 5 catégories appropriées pour le produit en fonction de sa tranche d'âge.
-- Jeux d'ambiance
-- Jeux en famille
-- Jeux pour enfants
-- Jeux de société
-- Jeux de communication

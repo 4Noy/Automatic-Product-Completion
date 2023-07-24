@@ -22,7 +22,7 @@ NEEDS :
 Python 3 - to install : go on the website https://www.python.org/
 openai python package - to install : pip install openai
 selenium python package - to install : pip install selenium
-unidecode python packa - to install : pip install Unidecode
+unidecode python package - to install : pip install Unidecode
 selenium-recaptcha-solver - to install : pip install selenium-recaptcha-solver
 Chrome app - to install : go on the website https://www.google.com/chrome/
 Chromium web driver - to install : go on the website https://chromedriver.chromium.org/downloads

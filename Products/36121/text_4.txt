@@ -1,7 +1,0 @@
-- Âge recommandé : Tous âges
-- Contenu : Une figurine de grenouille équatoriale bleue
-- Durée de jeu : Illimitée
-- Nombre de joueurs : 1 ou plus
-- Composition : Matière plastique
-- Matériau du produit : Plastique de haute qualité
-- Dimensions : Environ 8 cm de hauteur

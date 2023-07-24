@@ -1,7 +1,0 @@
-- Âge recommandé: Tout âge
-- Contenu: 1 jouet éléphant en bois de la savane
-- Matériau: Bois de haute qualité
-- Dimensions: Compacte et facile à transporter
-- Nombre de joueurs: 1 ou plus
-- Temps de jeu: Illimité
-- Composition: Bois naturel non toxique

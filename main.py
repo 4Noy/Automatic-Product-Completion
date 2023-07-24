@@ -126,20 +126,20 @@ def treatments(id_product):
 </style>
     <script>
     function reloadPageWithParameter(id) {
-  var text = document.getElementById(id).textContent;
-  var params = new URLSearchParams(window.location.search);
+    var text = document.getElementById(id).textContent;
+    var params = new URLSearchParams(window.location.search);
 
-  params.delete('regen');
-  params.delete('idRegen');
+    params.delete('regen');
+    params.delete('idRegen');
 
-  params.set('regen', encodeURIComponent(text));
-  params.set('idRegen', encodeURIComponent(id));
+    params.set('regen', encodeURIComponent(text));
+    params.set('idRegen', encodeURIComponent(id));
 
-  var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+    var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
 
-  history.replaceState({ path: newUrl }, '', newUrl);
+    history.replaceState({ path: newUrl }, '', newUrl);
 
-  window.location.reload();
+    window.location.reload();
 }
 function copyText(id) {
         var textToCopy = document.getElementById(id);

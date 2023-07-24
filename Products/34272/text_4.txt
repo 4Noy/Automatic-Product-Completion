@@ -1,8 +1,0 @@
-- Âge recommandé: 14 ans et plus
-- Contenu: cartes, dés, jetons, livret de règles
-- Durée de jeu: environ 2 à 3 heures
-- Nombre de joueurs: 1 à 7 joueurs
-- Composition: carton, plastique
-- Dimensions: disponibles sur le site [1]
-
-[1](https://www.philibertnet.com/fr/plaid-hat-games/94699-forgotten-waters-3558380085911.html)
