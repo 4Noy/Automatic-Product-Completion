@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+__author__ = "Noy."
+__version__ = "0.1"
+__credits__ = ["Mev"]
+
 from flask import Flask, render_template, request, send_from_directory
 import subprocess, os, json, openai, threading, time, urllib.parse
 
