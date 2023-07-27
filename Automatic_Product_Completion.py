@@ -4,7 +4,7 @@
 
 __author__ = "Noy."
 __version__ = "0.1"
-__credits__ = ["Mev"]
+__credits__ = ["Mevmidev"]
 
 
 import sys, openai, re, os, time, optparse, requests, json, threading, subprocess, unidecode
@@ -23,7 +23,8 @@ Python 3 - to install : go on the website https://www.python.org/
 openai python package - to install : pip install openai
 selenium python package - to install : pip install selenium
 unidecode python package - to install : pip install Unidecode
-selenium-recaptcha-solver - to install : pip install selenium-recaptcha-solver
+selenium-recaptcha-solver python package  - to install : pip install selenium-recaptcha-solver
+bs4 python package - to install : pip install bs4
 Chrome app - to install : go on the website https://www.google.com/chrome/
 Chromium web driver - to install : go on the website https://chromedriver.chromium.org/downloads
 
