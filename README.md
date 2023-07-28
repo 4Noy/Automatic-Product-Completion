@@ -49,10 +49,6 @@ The tool supports multiple modes, which can be selected using the `-m` or `--mod
 - Mode 2: Retrieves Only Pictures.
 - Mode 3: Generates Only Description and Meta.
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
 ## Contributing
 
 Contributions to this project are welcome. If you encounter any issues or have ideas for improvement, feel free to create an issue or submit a pull request.
