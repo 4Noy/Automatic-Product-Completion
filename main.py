@@ -221,4 +221,4 @@ function copyText(id) {
     return render_template(f'treatments_{id_product}.html', encoding='utf-8', id_product=id_product)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
